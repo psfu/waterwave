@@ -27,6 +27,7 @@ import java.util.concurrent.Executors;
 
 import waterwave.common.service.ShutdownService;
 import waterwave.common.service.SingleThreadService;
+import waterwave.common.util.PropertiesUtil;
 import waterwave.net.aio.AioClient;
 import waterwave.net.aio.AioServer;
 
@@ -34,7 +35,9 @@ public class ProxyAioServerService extends SingleThreadService{
 
 	public static void main(String[] args) {
 		ProxyAioServerService service = new ProxyAioServerService();
-		service.init(new Properties());
+		
+		Properties pp = new Properties();
+		service.init(pp);
 
 	}
 	
@@ -57,18 +60,28 @@ public class ProxyAioServerService extends SingleThreadService{
 	}
 
 	@Override
-	public void init(Properties pp) {
+	public void init(Properties p) {
 		
 		//
 		log.log(9 , "init...");
+		log.log(9 , p);
 		new ShutdownService(this);
 		
+		//
 		int threadNum = Runtime.getRuntime().availableProcessors() / 2;
 		if (threadNum == 0) {
 			threadNum = 1;
 		}
 		
+		
 		threadNum = 2;
+		//
+		int serverPort = 8001;
+		
+		PropertiesUtil pp = new PropertiesUtil(p);
+		threadNum = pp.getInt("threadNum", threadNum);
+		serverPort = pp.getInt("serverPort", serverPort);
+		
 		
 		ExecutorService serverES = Executors.newFixedThreadPool(threadNum, Executors.defaultThreadFactory());
 		ExecutorService clientES = Executors.newFixedThreadPool(threadNum, Executors.defaultThreadFactory());
@@ -78,7 +91,7 @@ public class ProxyAioServerService extends SingleThreadService{
 		
 		ProxyAioDataDealerFactory aioDataDealerFactory = new ProxyAioDataDealerFactory();
 		try {
-			server = new AioServer(8001, serverES, aioDataDealerFactory);
+			server = new AioServer(serverPort, serverES, aioDataDealerFactory);
 			client = new AioClient(clientES, aioDataDealerFactory);
 			 
 		} catch (IOException e) {
@@ -88,23 +101,29 @@ public class ProxyAioServerService extends SingleThreadService{
 		aioDataDealerFactory.setClient(client);
 
 		//IP
-		InetAddress ip;
+		String ipStr = null;
 		int remortPort = 80;
+		
 		remortPort = 9300;
 		remortPort = 9200;
 		remortPort = 11200;
 		remortPort = 3306;
+		
+		ipStr = "www.baidu.com";
+		ipStr = "news.163.com";
+		ipStr = "www.bing.com";
+		ipStr = "10.213.33.176";
+		ipStr = "127.0.0.1";
+		
+		InetAddress ip = null;
 		try {
-//			ip = InetAddress.getLocalHost();
-//			ip = InetAddress.getByName("www.baidu.com");
-//			ip = InetAddress.getByName("news.163.com");
-//			ip = InetAddress.getByName("www.bing.com");
-			ip = InetAddress.getByName("10.213.33.176");
-			ip = InetAddress.getByName("127.0.0.1");
-			ProxyAioRouter.staticRemote = new InetSocketAddress(ip , remortPort);
+			ip = InetAddress.getByName(ipStr);
+			
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
+		
+		ProxyAioRouter.staticRemote = new InetSocketAddress(ip , remortPort);
 		this.start();
 		server.run();
 		//client.run();

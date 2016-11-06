@@ -26,11 +26,12 @@ import java.util.concurrent.Executors;
 import waterwave.common.buffer.BufferPool;
 import waterwave.common.service.ShutdownService;
 import waterwave.common.service.SingleThreadService;
+import waterwave.common.util.PropertiesUtil;
 import waterwave.net.bio.BioClient;
 import waterwave.net.bio.BioServer;
 
-public class ProxyBioServerService  extends SingleThreadService {
-	
+public class ProxyBioServerService extends SingleThreadService {
+
 	@Override
 	public void run() {
 		for (;;) {
@@ -42,79 +43,96 @@ public class ProxyBioServerService  extends SingleThreadService {
 			}
 		}
 	}
-	
+
 	public static void main(String[] args) {
 		ProxyBioServerService service = new ProxyBioServerService();
-		service.init(new Properties());
+		Properties pp = new Properties();
+
+		int remortPort = 80;
+		remortPort = 9200;
+		remortPort = 3306;
+
+		pp.put("remortPort", remortPort);
+
+		service.init(pp);
 
 	}
 
 	@Override
-	public void init(Properties pp) {
+	public void init(Properties p) {
 		//
-		log.log(9 , "init...");
+		log.log(9, "init...");
 		new ShutdownService(this);
-		
 
-		
+		//
 		int poolSize = Runtime.getRuntime().availableProcessors() * 5;
-		
+
 		ExecutorService serverES = Executors.newFixedThreadPool(poolSize, Executors.defaultThreadFactory());
 		ExecutorService clientES = Executors.newFixedThreadPool(poolSize, Executors.defaultThreadFactory());
-		
+
 		ProxyBioDataDealerFactory bioDataDealerFactory = new ProxyBioDataDealerFactory();
-		
+
+		//
 		int bpSize = 400;
+		//
 		int bpBufferSize = 2 * 1024 * 1024;
-		
-		BufferPool bp = new BufferPool(bpSize,bpBufferSize);
+
+		//
+		int serverPort = 8001;
+
+		PropertiesUtil pp = new PropertiesUtil(p);
+		serverPort = pp.getInt("serverPort", serverPort);
+		poolSize = pp.getInt("serverPort", poolSize);
+
+		BufferPool bp = new BufferPool(bpSize, bpBufferSize);
 		BioServer bioServer = null;
 		BioClient bioClient = new BioClient(clientES, bp);
 		try {
-			bioServer = new BioServer(8001, serverES, bp, bioDataDealerFactory);
+			bioServer = new BioServer(serverPort, serverES, bp, bioDataDealerFactory);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		bioDataDealerFactory.setClient(bioClient);
 		bioDataDealerFactory.setServer(bioServer);
-		
-		
-		//IP
-		InetAddress ip;
+
+		// IP
+		String ipStr = null;
 		int remortPort = 80;
+
+		remortPort = 9300;
 		remortPort = 9200;
+		remortPort = 11200;
 		remortPort = 3306;
-		try {
-//			ip = InetAddress.getLocalHost();
-//			ip = InetAddress.getByName("www.baidu.com");
-//			ip = InetAddress.getByName("news.163.com");
-//			ip = InetAddress.getByName("www.bing.com");
-			ip = InetAddress.getByName("127.0.0.1");
-			ProxyAioRouter.staticRemoteIp = ip;
-			ProxyAioRouter.staticRemotePort = remortPort;
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
-		
-		
+
+		ipStr = "www.baidu.com";
+		ipStr = "news.163.com";
+		ipStr = "www.bing.com";
+		ipStr = "10.213.33.176";
+		ipStr = "127.0.0.1";
+
+		InetAddress ip = null;
+
+		ProxyAioRouter.staticRemoteIp = ip;
+		ProxyAioRouter.staticRemotePort = remortPort;
+
 		bioServer.start();
-		
-		log.log(9 , "init finished");
-		
+
+		log.log(9, "init finished");
+
 	}
 
 	@Override
 	public void onExit() {
-		log.log(9 , "exit...");
+		log.log(9, "exit...");
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onTime() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }
