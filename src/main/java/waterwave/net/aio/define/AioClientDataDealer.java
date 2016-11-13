@@ -15,9 +15,11 @@
  * 
  */
 
-package waterwave.net.aio;
+package waterwave.net.aio.define;
 
 import java.nio.ByteBuffer;
+
+import waterwave.net.aio.AioClientChannel;
 
 public interface AioClientDataDealer {
 

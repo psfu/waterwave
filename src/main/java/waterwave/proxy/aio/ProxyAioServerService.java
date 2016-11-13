@@ -15,7 +15,7 @@
  * 
  */
 
-package waterwave.proxy;
+package waterwave.proxy.aio;
 
 import java.io.IOException;
 import java.net.InetAddress;

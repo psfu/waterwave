@@ -14,17 +14,18 @@
  * limitations under the License.
  * 
  */
-package waterwave.proxy;
+package waterwave.proxy.bio;
 
 import java.io.IOException;
 
 import waterwave.common.buffer.BufferSp;
 import waterwave.common.service.ThreadSharedService;
 import waterwave.net.bio.BioClient;
-import waterwave.net.bio.BioClientHandler;
 import waterwave.net.bio.BioServer;
 import waterwave.net.bio.BioServerChannel;
-import waterwave.net.bio.BioServerHandler;
+import waterwave.net.bio.define.BioClientHandler;
+import waterwave.net.bio.define.BioServerHandler;
+import waterwave.proxy.aio.ProxyAioRouter;
 
 public class ProxyBioHanlder extends ThreadSharedService implements BioServerHandler{
 	

@@ -14,9 +14,11 @@
  * limitations under the License.
  * 
  */
-package waterwave.net.bio;
+
+package waterwave.net.bio.define;
 
 import waterwave.common.buffer.BufferSp;
+import waterwave.net.bio.BioServerChannel;
 
 public interface BioServerHandler extends Runnable{
 	

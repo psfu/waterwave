@@ -30,6 +30,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import waterwave.net.aio.define.AioClientDataDealer;
+import waterwave.net.aio.define.AioDataDealerFactory;
+
 public final class AioClient extends AioService implements Runnable {
 
 	// private final AsynchronousSocketChannel listener;

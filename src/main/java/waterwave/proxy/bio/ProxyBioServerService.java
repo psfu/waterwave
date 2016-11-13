@@ -14,7 +14,7 @@
  * limitations under the License.
  * 
  */
-package waterwave.proxy;
+package waterwave.proxy.bio;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -29,6 +29,7 @@ import waterwave.common.service.SingleThreadService;
 import waterwave.common.util.PropertiesUtil;
 import waterwave.net.bio.BioClient;
 import waterwave.net.bio.BioServer;
+import waterwave.proxy.aio.ProxyAioRouter;
 
 public class ProxyBioServerService extends SingleThreadService {
 

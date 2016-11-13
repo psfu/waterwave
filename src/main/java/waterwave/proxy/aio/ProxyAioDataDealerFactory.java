@@ -15,13 +15,13 @@
  * 
  */
 
-package waterwave.proxy;
+package waterwave.proxy.aio;
 
 import waterwave.net.aio.AioClient;
-import waterwave.net.aio.AioClientDataDealer;
-import waterwave.net.aio.AioDataDealerFactory;
 import waterwave.net.aio.AioServer;
-import waterwave.net.aio.AioServerDataDealer;
+import waterwave.net.aio.define.AioClientDataDealer;
+import waterwave.net.aio.define.AioDataDealerFactory;
+import waterwave.net.aio.define.AioServerDataDealer;
 
 public class ProxyAioDataDealerFactory implements AioDataDealerFactory {
 

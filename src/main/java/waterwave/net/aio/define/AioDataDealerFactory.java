@@ -15,7 +15,7 @@
  * 
  */
 
-package waterwave.net.aio;
+package waterwave.net.aio.define;
 
 public interface AioDataDealerFactory {
 

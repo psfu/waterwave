@@ -14,7 +14,7 @@
  * limitations under the License.
  * 
  */
-package waterwave.net.bio;
+package waterwave.net.bio.define;
 
 public interface BioClientHandler extends Runnable{
 

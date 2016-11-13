@@ -23,6 +23,7 @@ import java.net.Socket;
 
 import waterwave.common.buffer.BufferPool;
 import waterwave.common.buffer.BufferSp;
+import waterwave.net.bio.define.BioServerHandler;
 
 public class BioServerChannel extends BioChannel{
 	

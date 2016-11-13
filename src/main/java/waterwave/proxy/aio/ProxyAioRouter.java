@@ -14,7 +14,7 @@
  * limitations under the License.
  * 
  */
-package waterwave.proxy;
+package waterwave.proxy.aio;
 
 import java.net.InetAddress;
 import java.net.SocketAddress;

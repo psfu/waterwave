@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package waterwave.proxy;
+package waterwave.proxy.aio;
 
 import java.io.IOException;
 import java.net.SocketAddress;
@@ -28,9 +28,9 @@ import waterwave.common.service.ThreadSharedService;
 import waterwave.common.util.Common;
 import waterwave.net.aio.AioClient;
 import waterwave.net.aio.AioClientChannel;
-import waterwave.net.aio.AioClientDataDealer;
 import waterwave.net.aio.AioServerChannel;
-import waterwave.net.aio.AioServerDataDealer;
+import waterwave.net.aio.define.AioClientDataDealer;
+import waterwave.net.aio.define.AioServerDataDealer;
 
 /**
  * 

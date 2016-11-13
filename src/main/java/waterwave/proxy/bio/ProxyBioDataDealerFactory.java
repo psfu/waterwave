@@ -14,12 +14,12 @@
  * limitations under the License.
  * 
  */
-package waterwave.proxy;
+package waterwave.proxy.bio;
 
 import waterwave.net.bio.BioClient;
-import waterwave.net.bio.BioDataDealerFactory;
 import waterwave.net.bio.BioServer;
-import waterwave.net.bio.BioServerHandler;
+import waterwave.net.bio.define.BioDataDealerFactory;
+import waterwave.net.bio.define.BioServerHandler;
 
 public class ProxyBioDataDealerFactory implements BioDataDealerFactory {
 	
