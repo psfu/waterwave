@@ -36,9 +36,10 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 
-import waterwave.common.service.SingleThreadService;
+import waterwave.net.nio.define.NioDataDealerFactory;
+import waterwave.net.nio.define.NioServerDataDealer;
 
-public class NioServer extends SingleThreadService {
+public class NioServer extends NioService {
 	final static int TIMEOUT = 3000 * 1000;
 	final static int SO_RCVBUF = 32 * 1024;
 	final static int SO_SNDBUF = 32 * 1024;
@@ -50,17 +51,18 @@ public class NioServer extends SingleThreadService {
 	protected boolean secure;
 	protected boolean couple;
 	protected ExecutorService es;
-	
+
 	private SSLContext sslContext = null;
 	private ServerSocketChannel ssc;
 
-	
+	private NioDataDealerFactory nioDataDealerFactory;
 
-	public NioServer(int port, ExecutorService es, boolean secure, boolean couple) throws IOException {
+	public NioServer(int port, ExecutorService es, boolean secure, boolean couple, NioDataDealerFactory nioDataDealerFactory) throws IOException {
 		this.port = port;
 		this.es = es;
 		this.secure = secure;
 		this.couple = couple;
+		this.nioDataDealerFactory = nioDataDealerFactory;
 
 		if (secure) {
 			try {
@@ -75,39 +77,24 @@ public class NioServer extends SingleThreadService {
 		ssc.socket().bind(new InetSocketAddress(port), BACKLOG);
 		//
 		ssc.configureBlocking(false);
-		
-		if(couple){
-			DispatcherCouple d = new DispatcherCouple(ssc,es);
+
+		if (couple) {
+			DispatcherCouple d = new DispatcherCouple(ssc, es);
 			d.start();
-		}else{
-			DispatcherSingle d = new DispatcherSingle(ssc,es);
+		} else {
+			DispatcherSingle d = new DispatcherSingle(ssc, es);
 			d.start();
 		}
 
 	}
-	
-	
-	static class Dispatcher extends SingleThreadService  {
-
-		@Override
-		public void init(Properties pp) {
-			// TODO Auto-generated method stub
-		}
-
-		@Override
-		public void onExit() {
-			// TODO Auto-generated method stub
-		}
-
-		@Override
-		public void onTime() {
-			// TODO Auto-generated method stub
-		}
-		
-	}
-	
 
 	final static class AcceptorSingle {
+		private final NioDataDealerFactory nioDataDealerFactory;
+
+		public AcceptorSingle(NioDataDealerFactory nioDataDealerFactory) {
+			super();
+			this.nioDataDealerFactory = nioDataDealerFactory;
+		}
 
 		public final void accept(SelectionKey sk, DispatcherSingle d) throws IOException {
 			if (!sk.isAcceptable()) {
@@ -118,6 +105,8 @@ public class NioServer extends SingleThreadService {
 			if (sc == null) {
 				return;
 			}
+
+			sc.configureBlocking(false);
 
 			setSocket(sc);
 
@@ -133,7 +122,19 @@ public class NioServer extends SingleThreadService {
 			//
 			NioServerChannel nsc = new NioServerChannel(sc);
 
+			onConnect(nsc);
+
 			d.register(sc, SelectionKey.OP_READ, nsc);
+
+		}
+
+		private void onConnect(NioServerChannel nsc) {
+
+			NioServerDataDealer dealer = null;
+
+			dealer = nioDataDealerFactory.getNioServerDataDealer();
+
+			dealer.serverOnConnect(nsc);
 
 		}
 
@@ -190,7 +191,7 @@ public class NioServer extends SingleThreadService {
 						} else if (attr != null && (readyOps & SelectionKey.OP_READ) != 0) {
 							read((NioServerChannel) attr);
 						} else if (attr != null && (readyOps & SelectionKey.OP_WRITE) != 0) {
-							/// write((NioServerChannel) att);
+							write((NioServerChannel) attr);
 						} else {
 							key.cancel();
 						}
@@ -203,9 +204,12 @@ public class NioServer extends SingleThreadService {
 			}
 		}
 
-		private void read(NioServerChannel att) {
-			// TODO Auto-generated method stub
+		private void read(NioServerChannel nsc) {
+			nsc.read();
+		}
 
+		private void write(NioServerChannel nsc) {
+			nsc.write();
 		}
 
 		public void register(SocketChannel sc, int ops, Object o) throws ClosedChannelException {
@@ -214,52 +218,57 @@ public class NioServer extends SingleThreadService {
 
 	}
 
+	/**
+	 * 
+	 * 
+	 *
+	 */
 	final class AcceptorCouple extends Dispatcher implements Runnable {
 		private ServerSocketChannel ssc;
-		
-	    private DispatcherCouple d;
 
-	    protected SSLContext sslContext;
-	    
-	    long acceptCount;
+		private DispatcherCouple d;
 
-	    AcceptorCouple(ServerSocketChannel ssc, DispatcherCouple d, SSLContext sslContext) {
-	        this.ssc = ssc;
-	        this.d = d;
-	        this.sslContext = sslContext;
-	    }
-	    
-	    @Override
-	    public void run() {
-	        for (;;) {
-	            try {
-	                SocketChannel sc = ssc.accept();
+		protected SSLContext sslContext;
 
-//	                ChannelIO cio = (sslContext != null ?
-//	                    ChannelIOSecure.getInstance(
-//	                        sc, false /* non-blocking */, sslContext) :
-//	                    ChannelIO.getInstance(
-//	                        sc, false /* non-blocking */));
-//
-//	                RequestHandler rh = new RequestHandler(cio);
+		long acceptCount;
 
-	                //d.register(cio.getSocketChannel(), SelectionKey.OP_READ, rh);
-	                
-	                //sc.configureBlocking(false);
-	                NioServerChannel nsc = new NioServerChannel(sc);
-	                
+		AcceptorCouple(ServerSocketChannel ssc, DispatcherCouple d, SSLContext sslContext) {
+			this.ssc = ssc;
+			this.d = d;
+			this.sslContext = sslContext;
+		}
+
+		@Override
+		public void run() {
+			for (;;) {
+				try {
+					SocketChannel sc = ssc.accept();
+					sc.configureBlocking(false);
+
+					// ChannelIO cio = (sslContext != null ?
+					// ChannelIOSecure.getInstance(
+					// sc, false /* non-blocking */, sslContext) :
+					// ChannelIO.getInstance(
+					// sc, false /* non-blocking */));
+					//
+					// RequestHandler rh = new RequestHandler(cio);
+
+					// d.register(cio.getSocketChannel(), SelectionKey.OP_READ, rh);
+
+					// sc.configureBlocking(false);
+					NioServerChannel nsc = new NioServerChannel(sc);
+
 					setSocket(sc);
 
-	                
-	                d.register(sc, SelectionKey.OP_READ, nsc);
+					d.register(sc, SelectionKey.OP_READ, nsc);
 
-	            } catch (IOException x) {
-	                x.printStackTrace();
-	                break;
-	            }
-	        }
-	    }
-	    
+				} catch (IOException x) {
+					x.printStackTrace();
+					break;
+				}
+			}
+		}
+
 		private void setSocket(SocketChannel channel) throws SocketException {
 			Socket socket = channel.socket();
 			socket.setReceiveBufferSize(SO_RCVBUF);
@@ -267,18 +276,16 @@ public class NioServer extends SingleThreadService {
 			socket.setTcpNoDelay(true);
 			socket.setKeepAlive(true);
 		}
-	    
-		
+
 	}
-	
+
 	final class DispatcherCouple extends Dispatcher implements Runnable {
 
-		
 		long reactCount;
 
 		protected final ServerSocketChannel ssc;
 		private final Selector s;
-		
+
 		AcceptorCouple a;
 
 		public DispatcherCouple(ServerSocketChannel ssc, ExecutorService es) throws IOException {
@@ -291,8 +298,13 @@ public class NioServer extends SingleThreadService {
 			a.start();
 		}
 
+		private Object gate = new Object();
+
 		public void register(SocketChannel sc, int ops, Object o) throws ClosedChannelException {
-			sc.register(s, ops, o);
+			synchronized (gate) {
+				s.wakeup();
+				sc.register(s, ops, o);
+			}
 		}
 
 		@Override
@@ -306,7 +318,7 @@ public class NioServer extends SingleThreadService {
 					log.log(7, "Reader:", e);
 				}
 			}
-			
+
 		}
 
 		private void dispatch(Selector selector) {
@@ -329,7 +341,7 @@ public class NioServer extends SingleThreadService {
 							if ((readyOps & SelectionKey.OP_READ) != 0) {
 								read((NioServerChannel) attr);
 							} else if ((readyOps & SelectionKey.OP_WRITE) != 0) {
-								/// write((NioServerChannel) attr);
+								write((NioServerChannel) attr);
 							} else {
 								key.cancel();
 							}
@@ -340,20 +352,25 @@ public class NioServer extends SingleThreadService {
 				} finally {
 					keys.clear();
 				}
+
+				synchronized (gate) {
+				}
+
 			} catch (Throwable e) {
 				log.log(7, "Reader:", e);
 			}
-			
+
 		}
 
-		private void read(NioServerChannel attr) {
-			// TODO Auto-generated method stub
-			
+		private void read(NioServerChannel nsc) {
+			nsc.read();
 		}
 
+		private void write(NioServerChannel nsc) {
+			nsc.write();
+		}
 
 	}
-
 
 	/*
 	 * If this is a secure server, we now setup the SSLContext we'll use for creating the SSLEngines throughout the lifetime of this process.
@@ -375,14 +392,11 @@ public class NioServer extends SingleThreadService {
 		sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
 	}
 
-
-
 	@Override
 	public void init(Properties pp) {
 		// TODO Auto-generated method stub
 
 	}
-
 	@Override
 	public void onExit() {
 		// TODO Auto-generated method stub

@@ -113,6 +113,12 @@ public class ProxyBioServerService extends SingleThreadService {
 		ipStr = "127.0.0.1";
 
 		InetAddress ip = null;
+		
+		try {
+			ip = InetAddress.getByName(ipStr);
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
 
 		ProxyAioRouter.staticRemoteIp = ip;
 		ProxyAioRouter.staticRemotePort = remortPort;
