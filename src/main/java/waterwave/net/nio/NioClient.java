@@ -15,6 +15,7 @@
  * 
  */
 
+<<<<<<< HEAD
 package waterwave.net.nio;
 
 import java.io.IOException;
@@ -208,6 +209,7 @@ public class NioClient extends NioService {
 	@Override
 	public void onTime() {
 		// TODO Auto-generated method stub
+
 
 	}
 

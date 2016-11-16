@@ -20,4 +20,5 @@ public interface NioDataDealerFactory {
 	//public abstract NioServerHandler getNioServerDataDealer();
 	public abstract NioServerDataDealer getNioServerDataDealer();
 	public abstract NioClientDataDealer getNioClientDataDealer();
+
 }
