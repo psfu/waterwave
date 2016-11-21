@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package waterwave.proxy.aio;
+package waterwave.proxy.nio;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
-import java.nio.channels.WritePendingException;
 import java.util.LinkedList;
 
 import waterwave.common.buffer.BufferTools;
 import waterwave.common.log.Logger;
 import waterwave.common.service.ThreadSharedService;
 import waterwave.common.util.Common;
-import waterwave.net.aio.AioClient;
-import waterwave.net.aio.AioClientChannel;
-import waterwave.net.aio.AioServerChannel;
-import waterwave.net.aio.define.AioClientDataDealer;
-import waterwave.net.aio.define.AioServerDataDealer;
+import waterwave.net.nio.NioClient;
+import waterwave.net.nio.NioClientChannel;
+import waterwave.net.nio.NioServerChannel;
+import waterwave.net.nio.define.NioClientDataDealer;
+import waterwave.net.nio.define.NioServerDataDealer;
 import waterwave.proxy.router.ProxyRouter;
 
 /**
@@ -43,78 +43,47 @@ import waterwave.proxy.router.ProxyRouter;
  * 
  *
  */
-public class ProxyAioDataDealer extends ThreadSharedService implements AioServerDataDealer, AioClientDataDealer {
+public class ProxyNioDataDealer extends ThreadSharedService implements NioServerDataDealer, NioClientDataDealer {
 
-	AioClientChannel cc;
-	AioServerChannel sc;
+	NioClientChannel cc;
+	NioServerChannel sc;
 
-	AioClient client;
+	NioClient client;
 	SocketAddress remote;
-
+	
 	private boolean clientIniting;
-
-	public ProxyAioDataDealer() {
-
-	}
 	
-	final static boolean debug = false;
 	
-
-	public AioClient getClient() {
-		return client;
-	}
-	public void setClient(AioClient client) {
-		this.client = client;
-	}
-
-
-
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
-	}
-	
-
-
 	@Override
-	public void serverOnConnect(AioServerChannel channel) {
+	public void serverOnConnect(NioServerChannel channel) {
 		this.sc = channel;
+		InetAddress ip = ProxyRouter.staticRemoteIp;
+		int port = ProxyRouter.staticRemotePort;
 		
 		clientIniting = true;
+		
 		try {
-			remote = ProxyRouter.getStaticRemote();
-			client.connect(remote, this);
+			this.cc = client.createConnect(ip, port);
+			client.connect(this.cc);
 		} catch (IOException e) {
 			this.clientOnError(null, e, null);
 			e.printStackTrace();
 		}
 	}
-
 	@Override
-	public void serverBeforeRead(AioServerChannel channel) {
+	public void serverBeforeRead(NioServerChannel channel) {
+		
+		
+		// TODO Auto-generated method stub
+		
 	}
-
 	@Override
-	public void serverOnData(AioServerChannel channel, ByteBuffer b, int bytes) {
-		//log.log(1, "serverOnData...", b);
-		
-		//TODO
-		//Logger.log(new String(BufferTools.getBuffer2Byte(b)));
-		
-		//init client
+	public void serverOnData(NioServerChannel channel, ByteBuffer b, int bytes) {
 		if (cc == null) {
 			if (clientIniting) {
 				log.log(9, "serverOnData clientIniting long ...............");
 			}
 
-//			clientIniting = true;
-//			try {
-//				remote = ProxyAioRouter.getStaticRemote();
-//				client.connect(remote, this);
-//			} catch (IOException e) {
-//				this.clientOnError(null, e, null);
-//				e.printStackTrace();
-//			}
 			waitingToIniting(b);
 			
 		} else {
@@ -122,13 +91,7 @@ public class ProxyAioDataDealer extends ThreadSharedService implements AioServer
 			writeToClient(b);
 			chekcServerQueue();
 		}
-
-	}
-	
-
-	@Override
-	public void serverAfterWrite(AioServerChannel channel, ByteBuffer buffer, int bytes) {
-		chekcServerQueue();
+		
 	}
 	
 	private final LinkedList<ByteBuffer> cq = new LinkedList<>();
@@ -164,11 +127,11 @@ public class ProxyAioDataDealer extends ThreadSharedService implements AioServer
 		}
 	}
 	
-	private final void writeToServer0(ByteBuffer buffer) {
+	private final void writeToServer0(ByteBuffer buffer)   {
 		try {
 			buffer.flip();
 			sc.write(buffer);
-		} catch (WritePendingException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 			buffer.position(buffer.limit());
 			sq.add(buffer);
@@ -180,13 +143,14 @@ public class ProxyAioDataDealer extends ThreadSharedService implements AioServer
 		try {
 			buffer.flip();
 			cc.write(buffer);
-		} catch (WritePendingException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 			buffer.position(buffer.limit());
 			cq.add(buffer);
 			writeClientFromQueue();
 		}
 	}
+	
 
 	/**
 	 * client writeQueue and merge Buffer;
@@ -262,10 +226,14 @@ public class ProxyAioDataDealer extends ThreadSharedService implements AioServer
 			}
 		}
 	}
-
 	
 	@Override
-	public void serverOnError(AioServerChannel channel, Throwable e, ByteBuffer b) {
+	public void serverAfterWrite(NioServerChannel channel, ByteBuffer buffer, int bytes) {
+		chekcServerQueue();
+	}
+	
+	@Override
+	public void serverOnError(NioServerChannel channel, Throwable e, ByteBuffer b) {
 		log.log(9, "serverOnError...", e.toString());
 		if (b != null) {
 			log.log(9, "serverOnError... : ByteBuffer", b.position());
@@ -286,41 +254,33 @@ public class ProxyAioDataDealer extends ThreadSharedService implements AioServer
 		sc.close();
 		
 	}
-
 	@Override
-	public void serverOnClose(AioServerChannel channel) {
+	public void serverOnClose(NioServerChannel channel) {
 		log.log(3, "dealer:serverOnClose...");
 		sc.close();
 	}
-
 	@Override
 	public boolean serverAcceptsMessages() {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
+
 	
-	
-	/**
-	 * client
-	 * 
-	 * 
-	 * 
-	 */
 	@Override
-	public void clientOnConnect(AioClientChannel channel) {
+	public void clientBeforeRead(NioClientChannel channel) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void clientOnConnect(NioClientChannel channel) {
 		clientIniting = false;
-		this.cc = channel;
+		// TODO Auto-generated method stub
 		chekcClientQueue();
 	}
 
 	@Override
-	public void clientBeforeRead(AioClientChannel channel) {
-
-	}
-
-	@Override
-	public void clientOnData(AioClientChannel channel, ByteBuffer b, int result) {
+	public void clientOnData(NioClientChannel channel, ByteBuffer b, int bytes) {
 		//log.log(1, "clientOnData...", b);
 		
 		//TODO
@@ -331,16 +291,15 @@ public class ProxyAioDataDealer extends ThreadSharedService implements AioServer
 		}
 		writeToServer(b);
 		chekcClientQueue();
+		
 	}
-	
-
 	@Override
-	public void clientAfterWrite(AioClientChannel channel, ByteBuffer buffer, int bytes) {
+	public void clientAfterWrite(NioClientChannel channel, ByteBuffer buffer, int bytes) {
 		chekcClientQueue();
+		
 	}
-
 	@Override
-	public void clientOnError(AioClientChannel channel, Throwable e, ByteBuffer b) {
+	public void clientOnError(NioClientChannel channel, Throwable e, ByteBuffer b) {
 		log.log(9, "clientOnError...", e.toString());
 		if (b != null) {
 			log.log(9, "clientOnError... : ByteBuffer", b.position());
@@ -359,22 +318,25 @@ public class ProxyAioDataDealer extends ThreadSharedService implements AioServer
 		}
 		cc.close();
 		sc.close();
-
+		
 	}
-
 	@Override
-	public void clientOnClose(AioClientChannel channel) {
+	public void clientOnClose(NioClientChannel channel) {
 		channel.close();
 		sc.close();
-
 	}
-
+	
 	@Override
 	public boolean clientAcceptsMessages() {
 		// TODO Auto-generated method stub
 		return false;
 	}
-
+	
+	public void setClient(NioClient client) {
+		this.client = client;
+		
+	}
+	
 
 
 

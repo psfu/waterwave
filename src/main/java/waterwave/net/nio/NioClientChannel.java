@@ -4,11 +4,12 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 
+import waterwave.common.buffer.BufferPoolNIO;
 import waterwave.net.nio.define.NioClientDataDealer;
 
 public class NioClientChannel {
 
-	SocketChannel channel;
+	SocketChannel sc;
 
 	// just for proxy
 	private NioServerChannel nioServerChannel;
@@ -16,24 +17,57 @@ public class NioClientChannel {
 	private Object attr;
 
 	private NioClientDataDealer dealer;
+	
+	private final BufferPoolNIO bp;
+	
+	public NioClientChannel(SocketChannel channel, BufferPoolNIO bp) {
+		super();
+		this.sc = channel;
+		this.bp = bp;
+	}
 
-	public int read0(ByteBuffer dst) throws IOException {
-		int r = channel.read(dst);
+	public int read(ByteBuffer dst) throws IOException {
+		int r = sc.read(dst);
 		return r;
 	}
 
-	public int write0(ByteBuffer src) throws IOException {
-		int r = channel.write(src);
-		return r;
+	public int write(ByteBuffer src) throws IOException {
+		int w = sc.write(src);
+		//TODO
+		//dealer.clientAfterWrite(this, src, w);
+		return w;
 	}
+	
+	
 
 	public void read() {
-		dealer.clientOnData(this);
+		ByteBuffer b = bp.allocate();
+		try {
+			int in = read(b);
+			dealer.clientOnData(this, b,  in);
+		} catch (IOException e) {
+			bp.recycle(b);
+			e.printStackTrace();
+			close();
+		}
 	}
+
 
 	public void write() {
 		// TODO Auto-generated method stub
 	}
+	
+	public void close() {
+		try {
+			sc.close();
+		} catch (IOException e) {
+			//
+			e.printStackTrace();
+		}
+		dealer.clientOnClose(this);
+
+	}
+
 
 	public NioClientDataDealer getDealer() {
 		return dealer;
@@ -43,10 +77,7 @@ public class NioClientChannel {
 		this.dealer = dealer;
 	}
 
-	public NioClientChannel(SocketChannel channel) {
-		super();
-		this.channel = channel;
-	}
+	
 
 	public NioServerChannel getNioServerChannel() {
 		return nioServerChannel;
@@ -65,11 +96,11 @@ public class NioClientChannel {
 	}
 
 	public SocketChannel getChannel() {
-		return channel;
+		return sc;
 	}
 
 	public void setChannel(SocketChannel channel) {
-		this.channel = channel;
+		this.sc = channel;
 	}
 
 	public static void main(String[] args) {
@@ -77,10 +108,7 @@ public class NioClientChannel {
 
 	}
 
-	public void close() {
-		// TODO Auto-generated method stub
-
-
-	}
+	
+	
 
 }

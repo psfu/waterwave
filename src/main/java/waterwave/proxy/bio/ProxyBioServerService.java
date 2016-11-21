@@ -29,7 +29,7 @@ import waterwave.common.service.SingleThreadService;
 import waterwave.common.util.PropertiesUtil;
 import waterwave.net.bio.BioClient;
 import waterwave.net.bio.BioServer;
-import waterwave.proxy.aio.ProxyAioRouter;
+import waterwave.proxy.router.ProxyRouter;
 
 public class ProxyBioServerService extends SingleThreadService {
 
@@ -120,8 +120,8 @@ public class ProxyBioServerService extends SingleThreadService {
 			e.printStackTrace();
 		}
 
-		ProxyAioRouter.staticRemoteIp = ip;
-		ProxyAioRouter.staticRemotePort = remortPort;
+		ProxyRouter.staticRemoteIp = ip;
+		ProxyRouter.staticRemotePort = remortPort;
 
 		bioServer.start();
 

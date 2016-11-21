@@ -15,7 +15,6 @@
  * 
  */
 
-<<<<<<< HEAD
 package waterwave.net.nio;
 
 import java.io.IOException;
@@ -31,6 +30,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
+import waterwave.common.buffer.BufferPoolNIO;
 import waterwave.net.nio.define.NioDataDealerFactory;
 
 public class NioClient extends NioService {
@@ -43,32 +43,33 @@ public class NioClient extends NioService {
 	
 	protected NioDataDealerFactory nioDataDealerFactory;
 	
-	public NioClient(ExecutorService es, NioDataDealerFactory nioDataDealerFactory) throws IOException {
+	private BufferPoolNIO bp;
+	
+	public NioClient(ExecutorService es, BufferPoolNIO bp, NioDataDealerFactory nioDataDealerFactory) throws IOException {
 		// ExecutorService channelWorkers = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), Executors.defaultThreadFactory());
 		this.nioDataDealerFactory = nioDataDealerFactory;
+		this.bp = bp;
 	}
 	
 	public NioClientChannel createConnect(InetAddress ip, int port) throws IOException {
 		SocketChannel sc = connect0(ip, port);
 
-		NioClientChannel c = new NioClientChannel(sc);
+		NioClientChannel c = new NioClientChannel(sc,bp);
 		
 		return c;
 	}
 
-	public NioClientChannel connect(NioClientChannel nc) throws IOException {
-		SocketChannel sc = nc.channel;
+	public NioClientChannel connect(final NioClientChannel nc) throws IOException {
+		SocketChannel sc = nc.sc;
 		
-		NioClientChannel c = new NioClientChannel(sc);
 		// log.log(1 "BioClient: connect finish", s);
 
-		d.register(sc, SelectionKey.OP_CONNECT, c);
+		d.register(sc, SelectionKey.OP_CONNECT, nc);
 
-		return c;
+		return nc;
 	}
 
 	private SocketChannel connect0(InetAddress ip, int port) throws IOException {
-		// TODO Auto-generated method stub
 
 		SocketChannel s = SocketChannel.open();
 		s.configureBlocking(false);
@@ -107,7 +108,7 @@ public class NioClient extends NioService {
 		}
 
 		private void connect(NioClientChannel attr) throws IOException {
-			SocketChannel sc = attr.channel;
+			SocketChannel sc = attr.sc;
 			//
 			sc.finishConnect();
 			
@@ -176,9 +177,6 @@ public class NioClient extends NioService {
 
 		}
 
-		
-		
-		
 
 	}
 	

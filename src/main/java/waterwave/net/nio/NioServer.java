@@ -36,6 +36,7 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 
+import waterwave.common.buffer.BufferPoolNIO;
 import waterwave.net.nio.define.NioDataDealerFactory;
 import waterwave.net.nio.define.NioServerDataDealer;
 
@@ -56,14 +57,18 @@ public class NioServer extends NioService {
 	private ServerSocketChannel ssc;
 
 	private NioDataDealerFactory nioDataDealerFactory;
+	
+	private BufferPoolNIO bp;
 
-	public NioServer(int port, ExecutorService es, boolean secure, boolean couple, NioDataDealerFactory nioDataDealerFactory) throws IOException {
+	public NioServer(int port, ExecutorService es, boolean secure, boolean couple, BufferPoolNIO bp, NioDataDealerFactory nioDataDealerFactory) throws IOException {
 		this.port = port;
 		this.es = es;
 		this.secure = secure;
 		this.couple = couple;
 		this.nioDataDealerFactory = nioDataDealerFactory;
-
+		this.bp = bp;
+		
+		
 		if (secure) {
 			try {
 				createSSLContext();
@@ -88,7 +93,7 @@ public class NioServer extends NioService {
 
 	}
 
-	final static class AcceptorSingle {
+	final class AcceptorSingle {
 		private final NioDataDealerFactory nioDataDealerFactory;
 
 		public AcceptorSingle(NioDataDealerFactory nioDataDealerFactory) {
@@ -120,7 +125,7 @@ public class NioServer extends NioService {
 			// RequestHandler rh = new RequestHandler(cio);
 
 			//
-			NioServerChannel nsc = new NioServerChannel(sc);
+			NioServerChannel nsc = new NioServerChannel(sc,bp);
 
 			onConnect(nsc);
 
@@ -138,7 +143,7 @@ public class NioServer extends NioService {
 
 		}
 
-		private final static void setSocket(SocketChannel channel) throws SocketException {
+		private final void setSocket(SocketChannel channel) throws SocketException {
 			Socket socket = channel.socket();
 			socket.setReceiveBufferSize(SO_RCVBUF);
 			socket.setSendBufferSize(SO_SNDBUF);
@@ -256,9 +261,11 @@ public class NioServer extends NioService {
 					// d.register(cio.getSocketChannel(), SelectionKey.OP_READ, rh);
 
 					// sc.configureBlocking(false);
-					NioServerChannel nsc = new NioServerChannel(sc);
+					NioServerChannel nsc = new NioServerChannel(sc,bp);
 
 					setSocket(sc);
+					
+					onConnect(nsc);
 
 					d.register(sc, SelectionKey.OP_READ, nsc);
 
@@ -267,6 +274,16 @@ public class NioServer extends NioService {
 					break;
 				}
 			}
+		}
+
+		private void onConnect(NioServerChannel nsc) {
+			NioServerDataDealer dealer = null;
+
+			dealer = nioDataDealerFactory.getNioServerDataDealer();
+
+			dealer.serverOnConnect(nsc);
+
+			
 		}
 
 		private void setSocket(SocketChannel channel) throws SocketException {
