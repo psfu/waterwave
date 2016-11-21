@@ -26,10 +26,11 @@ public interface NioClientDataDealer {
     
 	void clientBeforeRead(NioClientChannel channel);
 	void clientOnConnect(NioClientChannel channel);
-	void clientOnData(NioClientChannel channel);
+	void clientOnData(NioClientChannel channel, ByteBuffer b, int bytes);
 	void clientAfterWrite(NioClientChannel channel, ByteBuffer buffer, int bytes);
 	void clientOnError(NioClientChannel channel,Throwable exc, ByteBuffer attachment);
     void clientOnClose(NioClientChannel channel);
 
 	boolean clientAcceptsMessages();
+	
 }

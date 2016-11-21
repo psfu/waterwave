@@ -29,7 +29,7 @@ import waterwave.common.service.SingleThreadService;
 import waterwave.common.util.PropertiesUtil;
 import waterwave.net.bio.BioClient;
 import waterwave.net.bio.BioServer;
-import waterwave.proxy.aio.ProxyAioRouter;
+import waterwave.proxy.router.ProxyRouter;
 
 public class ProxyBioServerService extends SingleThreadService {
 
@@ -85,11 +85,12 @@ public class ProxyBioServerService extends SingleThreadService {
 		serverPort = pp.getInt("serverPort", serverPort);
 		poolSize = pp.getInt("serverPort", poolSize);
 
-		BufferPool bp = new BufferPool(bpSize, bpBufferSize);
+		BufferPool bp1 = new BufferPool(bpSize, bpBufferSize);
+		BufferPool bp2 = new BufferPool(bpSize, bpBufferSize);
 		BioServer bioServer = null;
-		BioClient bioClient = new BioClient(clientES, bp);
+		BioClient bioClient = new BioClient(clientES, bp2);
 		try {
-			bioServer = new BioServer(serverPort, serverES, bp, bioDataDealerFactory);
+			bioServer = new BioServer(serverPort, serverES, bp1, bioDataDealerFactory);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -120,8 +121,8 @@ public class ProxyBioServerService extends SingleThreadService {
 			e.printStackTrace();
 		}
 
-		ProxyAioRouter.staticRemoteIp = ip;
-		ProxyAioRouter.staticRemotePort = remortPort;
+		ProxyRouter.staticRemoteIp = ip;
+		ProxyRouter.staticRemotePort = remortPort;
 
 		bioServer.start();
 

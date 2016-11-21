@@ -32,6 +32,8 @@ public abstract class SingleThreadService extends Thread implements Runnable {
 	public abstract void onExit();
 	
 	public abstract void onTime();
+	
+	
 
 	public void sleep(int time) {
 		try {

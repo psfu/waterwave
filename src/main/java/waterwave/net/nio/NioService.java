@@ -16,11 +16,16 @@
  */
 package waterwave.net.nio;
 
+import java.nio.channels.SelectionKey;
 import java.util.Properties;
+import java.util.Set;
 
+import waterwave.common.service.Service;
 import waterwave.common.service.SingleThreadService;
 
 public abstract class NioService extends SingleThreadService {
+	
+	
 	
 	
 	static class Dispatcher extends SingleThreadService  {
@@ -39,6 +44,17 @@ public abstract class NioService extends SingleThreadService {
 		public void onTime() {
 			// TODO Auto-generated method stub
 		}
+		
+	}
+	
+	void showKeys(Set<SelectionKey> keys) {
+		for (SelectionKey key:keys){
+			log.log(1,key.readyOps(),key.interestOps(),key.channel(),key.attachment());
+		}
+		
+	}
+	
+	static class NioHandler extends Service {
 		
 	}
 

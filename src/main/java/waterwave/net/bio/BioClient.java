@@ -36,6 +36,11 @@ public class BioClient  extends SingleThreadService {
 	private final BufferPool bp;
 
 	
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+	
 
 	public BioClient(ExecutorService es, BufferPool bp) {
 		super();
@@ -56,7 +61,7 @@ public class BioClient  extends SingleThreadService {
 		return c;
 	}
 
-	public Socket connect0(InetAddress ip, int port) throws IOException {
+	public static Socket connect0(InetAddress ip, int port) throws IOException {
 
 		Socket s = new Socket(ip, port);
 		s.setTcpNoDelay(true);

@@ -59,12 +59,17 @@ public class BioServerChannel extends BioChannel{
 			int ri = 0;
 			int length = b.size;
 
+			int i = 0;
 			for (;;) {
+				
 				int read = is.read(b.b, ri, (length - ri));
 				ri += read;
 				//log.log(1 "BioServerChannel: read: ", read);
 				//log.log(1 "BioServerChannel: read count: ", ri);
 				if (read <= 0) {
+					if(i == 0) {
+						this.close();
+					}
 					break;
 				}
 				
@@ -75,6 +80,9 @@ public class BioServerChannel extends BioChannel{
 					log.log(9, "BioServerChannel: Read full !! ...... ", ri);
 					break;
 				}
+				++i;
+				
+				//TODO
 				if(true) {
 					break;
 				}

@@ -15,7 +15,6 @@
  * 
  */
 
-<<<<<<< HEAD
 package waterwave.net.nio;
 
 import java.io.IOException;
@@ -23,52 +22,63 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
+import java.nio.ByteBuffer;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
+import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
+import waterwave.common.buffer.BufferPoolNIO;
+import waterwave.net.nio.define.NioClientDataDealer;
 import waterwave.net.nio.define.NioDataDealerFactory;
 
 public class NioClient extends NioService {
-	
+
 	final static int TIMEOUT = 3000 * 1000;
 	final static int SO_RCVBUF = 32 * 1024;
 	final static int SO_SNDBUF = 32 * 1024;
 
 	DispatcherReader d;
-	
+
 	protected NioDataDealerFactory nioDataDealerFactory;
-	
-	public NioClient(ExecutorService es, NioDataDealerFactory nioDataDealerFactory) throws IOException {
+
+	private BufferPoolNIO bp;
+
+	public NioClient(ExecutorService es, BufferPoolNIO bp, NioDataDealerFactory nioDataDealerFactory) throws IOException {
 		// ExecutorService channelWorkers = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), Executors.defaultThreadFactory());
 		this.nioDataDealerFactory = nioDataDealerFactory;
+		this.bp = bp;
+
+		d = new DispatcherReader(es);
+		d.start();
 	}
-	
-	public NioClientChannel createConnect(InetAddress ip, int port) throws IOException {
+
+	public NioClientChannel createConnect(InetAddress ip, int port, NioClientDataDealer dealer) throws IOException {
 		SocketChannel sc = connect0(ip, port);
 
-		NioClientChannel c = new NioClientChannel(sc);
-		
+		if(dealer == null) {
+			dealer = nioDataDealerFactory.getNioClientDataDealer();
+		}
+		NioClientChannel c = new NioClientChannel(sc, bp, dealer);
+
 		return c;
 	}
 
-	public NioClientChannel connect(NioClientChannel nc) throws IOException {
-		SocketChannel sc = nc.channel;
-		
-		NioClientChannel c = new NioClientChannel(sc);
-		// log.log(1 "BioClient: connect finish", s);
+	public NioClientChannel connect(final NioClientChannel nc) throws IOException {
+		SocketChannel sc = nc.sc;
 
-		d.register(sc, SelectionKey.OP_CONNECT, c);
+		// //log.log(1 "BioClient: connect finish", s);
 
-		return c;
+		d.register(sc, SelectionKey.OP_CONNECT, nc);
+
+		return nc;
 	}
 
 	private SocketChannel connect0(InetAddress ip, int port) throws IOException {
-		// TODO Auto-generated method stub
 
 		SocketChannel s = SocketChannel.open();
 		s.configureBlocking(false);
@@ -78,16 +88,25 @@ public class NioClient extends NioService {
 		return s;
 	}
 
-	public static class DispatcherReader extends Dispatcher {
+	public class DispatcherReader extends Dispatcher {
 		protected Selector s;
 
 		long reactCount;
+		private final ExecutorService es;
 
-		
+		public DispatcherReader(ExecutorService es) throws IOException {
+			
+			this.setName("clientDisp");
+			
+			this.es = es;
+			s = Selector.open();
+		}
+
 		private Object gate = new Object();
 
 		public void register(SocketChannel sc, int ops, Object o) throws ClosedChannelException {
 			synchronized (gate) {
+				//log.log(1, "wakeup!!");
 				s.wakeup();
 				sc.register(s, ops, o);
 			}
@@ -96,35 +115,42 @@ public class NioClient extends NioService {
 		private void registerNosync(SocketChannel sc, int ops, Object o) throws ClosedChannelException {
 			sc.register(s, ops, o);
 		}
-		
+
 		private void read(NioClientChannel cc) {
-			
-			cc.read();
+			ByteBuffer b = bp.allocate();
+			int r = cc.read(b);
+			//
+			if(r > 0 ){
+				es.submit(new ReadHandler(cc, b, r));
+			}
 		}
-		
-		private void write(NioServerChannel cc) {
-			cc.write();
+
+		private void write(NioClientChannel cc) {
+			ByteBuffer b = bp.allocate();
+			cc.write(b);
 		}
 
 		private void connect(NioClientChannel attr) throws IOException {
-			SocketChannel sc = attr.channel;
+			SocketChannel sc = attr.sc;
 			//
 			sc.finishConnect();
-			
+
 			setSocket(sc);
-			
+
 			registerNosync(sc, SelectionKey.OP_READ, attr);
 
 		}
 
 		@Override
 		public void run() {
+			log.log(5, "Client DispatcherSingle start");
 			final Selector selector = this.s;
 			for (;;) {
 				// ++reactCount;
 				try {
 					dispatch(selector);
 				} catch (Throwable e) {
+					e.printStackTrace();
 					log.log(7, "Reader:", e);
 				}
 
@@ -135,26 +161,38 @@ public class NioClient extends NioService {
 		private void dispatch(Selector selector) {
 			++reactCount;
 			try {
-				selector.select(2000L);
-				// System.out.println("--->selector:"+selector);
+				// selector.select(20000L);
+				selector.select();
+				////log.log(1, "--->client selector:" + selector.keys());
 				// register(selector);
 				Set<SelectionKey> keys = selector.selectedKeys();
+				//log.log(1, "--->client keys:" + keys);
+				//TODO
+				//showKeys(keys);
 				try {
-					for (SelectionKey key : keys) {
-						Object attr = key.attachment();
+					Iterator<SelectionKey> it = keys.iterator();
 
-						// TODO
-						// System.out.println("--->att:"+att);
+					for (; it.hasNext();) {
+						SelectionKey key = it.next();
+						it.remove();
 
-						if (attr != null && key.isValid()) {
+						Object conn = key.attachment();
+
+						if (conn != null && key.isValid()) {
+							// TODO
+							//log.log(1, "--->conn:" + conn);
+
 							int readyOps = key.readyOps();
 
 							if ((readyOps & SelectionKey.OP_CONNECT) != 0) {
-								connect((NioClientChannel) attr);
+								// keys.remove(key);
+								connect((NioClientChannel) conn);
 							} else if ((readyOps & SelectionKey.OP_READ) != 0) {
-								read((NioClientChannel) attr);
+								// keys.remove(key);
+								read((NioClientChannel) conn);
 							} else if ((readyOps & SelectionKey.OP_WRITE) != 0) {
-								write((NioServerChannel) attr);
+								// keys.remove(key);
+								write((NioClientChannel) conn);
 							} else {
 								key.cancel();
 							}
@@ -171,17 +209,38 @@ public class NioClient extends NioService {
 				}
 
 			} catch (Throwable e) {
+				e.printStackTrace();
 				log.log(7, "Reader:", e);
 			}
 
 		}
 
-		
-		
-		
+	}
+
+	final static class ReadHandler extends NioHandler implements Runnable {
+
+		private final NioClientChannel nsc;
+
+		private final ByteBuffer b;
+		private final int r;
+
+		public ReadHandler(NioClientChannel nsc, ByteBuffer b, int r) {
+			super();
+			this.nsc = nsc;
+			this.b = b;
+			this.r = r;
+		}
+
+		@Override
+		public void run() {
+			//
+			//
+			//log.log(1, "client read start");
+			nsc.read(b, r);
+		}
 
 	}
-	
+
 	private final static void setSocket(SocketChannel channel) throws SocketException {
 		Socket socket = channel.socket();
 		socket.setReceiveBufferSize(SO_RCVBUF);
@@ -189,7 +248,7 @@ public class NioClient extends NioService {
 		socket.setTcpNoDelay(true);
 		socket.setKeepAlive(true);
 	}
-	
+
 	public static void main(String[] args) {
 
 	}
@@ -209,7 +268,6 @@ public class NioClient extends NioService {
 	@Override
 	public void onTime() {
 		// TODO Auto-generated method stub
-
 
 	}
 

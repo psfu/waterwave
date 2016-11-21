@@ -14,12 +14,12 @@
  * limitations under the License.
  * 
  */
-package waterwave.proxy.aio;
+package waterwave.proxy.router;
 
 import java.net.InetAddress;
 import java.net.SocketAddress;
 
-public class ProxyAioRouter {
+public class ProxyRouter {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub

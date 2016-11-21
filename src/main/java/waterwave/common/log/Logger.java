@@ -44,11 +44,17 @@ public abstract class Logger {
 
 	public final static void log(byte[] bs) {
 		for (byte b : bs) {
-			log(b);
-			log("\t");
+			log1(b);
+			log1("\t");
 		}
+		log("\t");
 	}
-
+	
+	
+	public final static void log1(Object o) {
+		System.out.print(o);
+	}
+	
 	public final static void log(Object o) {
 		System.out.println(o);
 	}

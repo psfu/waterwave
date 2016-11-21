@@ -22,12 +22,14 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketException;
+import java.nio.ByteBuffer;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.security.KeyStore;
+import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -36,6 +38,7 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 
+import waterwave.common.buffer.BufferPoolNIO;
 import waterwave.net.nio.define.NioDataDealerFactory;
 import waterwave.net.nio.define.NioServerDataDealer;
 
@@ -57,12 +60,16 @@ public class NioServer extends NioService {
 
 	private NioDataDealerFactory nioDataDealerFactory;
 
-	public NioServer(int port, ExecutorService es, boolean secure, boolean couple, NioDataDealerFactory nioDataDealerFactory) throws IOException {
+	private BufferPoolNIO bp;
+
+	public NioServer(int port, ExecutorService es, boolean secure, boolean couple, BufferPoolNIO bp, NioDataDealerFactory nioDataDealerFactory)
+			throws IOException {
 		this.port = port;
 		this.es = es;
 		this.secure = secure;
 		this.couple = couple;
 		this.nioDataDealerFactory = nioDataDealerFactory;
+		this.bp = bp;
 
 		if (secure) {
 			try {
@@ -79,19 +86,20 @@ public class NioServer extends NioService {
 		ssc.configureBlocking(false);
 
 		if (couple) {
-			DispatcherCouple d = new DispatcherCouple(ssc, es);
+			DispatcherCouple d = new DispatcherCouple(ssc, es, nioDataDealerFactory);
 			d.start();
 		} else {
-			DispatcherSingle d = new DispatcherSingle(ssc, es);
+
+			DispatcherSingle d = new DispatcherSingle(ssc, es, nioDataDealerFactory);
 			d.start();
 		}
 
 	}
 
-	final static class AcceptorSingle {
+	final class AcceptorSingle {
 		private final NioDataDealerFactory nioDataDealerFactory;
 
-		public AcceptorSingle(NioDataDealerFactory nioDataDealerFactory) {
+		public AcceptorSingle(ServerSocketChannel ssc, DispatcherSingle d, ExecutorService es, NioDataDealerFactory nioDataDealerFactory) {
 			super();
 			this.nioDataDealerFactory = nioDataDealerFactory;
 		}
@@ -120,7 +128,7 @@ public class NioServer extends NioService {
 			// RequestHandler rh = new RequestHandler(cio);
 
 			//
-			NioServerChannel nsc = new NioServerChannel(sc);
+			NioServerChannel nsc = new NioServerChannel(sc, bp);
 
 			onConnect(nsc);
 
@@ -130,15 +138,14 @@ public class NioServer extends NioService {
 
 		private void onConnect(NioServerChannel nsc) {
 
-			NioServerDataDealer dealer = null;
+			NioServerDataDealer dealer = nioDataDealerFactory.getNioServerDataDealer();
 
-			dealer = nioDataDealerFactory.getNioServerDataDealer();
-
+			nsc.dealer = dealer;
 			dealer.serverOnConnect(nsc);
 
 		}
 
-		private final static void setSocket(SocketChannel channel) throws SocketException {
+		private final void setSocket(SocketChannel channel) throws SocketException {
 			Socket socket = channel.socket();
 			socket.setReceiveBufferSize(SO_RCVBUF);
 			socket.setSendBufferSize(SO_SNDBUF);
@@ -151,20 +158,33 @@ public class NioServer extends NioService {
 	final class DispatcherSingle extends Dispatcher implements Runnable {
 		protected ServerSocketChannel ssc;
 		protected Selector s;
-		AcceptorSingle a;
+		private AcceptorSingle a;
 
-		public DispatcherSingle(ServerSocketChannel ssc2, ExecutorService es) {
-			// TODO Auto-generated constructor stub
+
+		public DispatcherSingle(ServerSocketChannel ssc, ExecutorService es, NioDataDealerFactory nioDataDealerFactory) throws IOException {
+			
+			this.setName("serverDisp");
+			
+			this.ssc = ssc;
+			s = Selector.open();
+
+
+			ssc.register(s, SelectionKey.OP_ACCEPT);
+			AcceptorSingle a = new AcceptorSingle(ssc, this, es, nioDataDealerFactory);
+			this.a = a;
+
 		}
 
 		@Override
 		public void run() {
+			log.log(5, "Server DispatcherSingle start");
 			final Selector selector = this.s;
 			for (;;) {
 				// ++reactCount;
 				try {
 					dispatch(selector);
 				} catch (Throwable e) {
+					e.printStackTrace();
 					log.log(7, "Reader:", e);
 				}
 			}
@@ -172,25 +192,37 @@ public class NioServer extends NioService {
 		}
 
 		private final void dispatch(final Selector selector) throws IOException {
-			selector.select(2000L);
-			// System.out.println("--->selector:"+selector);
+			// selector.select(20000L);
+			selector.select();
+			////log.log(1,"--->server selector:" + selector.keys());
 			// register(selector);
 			Set<SelectionKey> keys = selector.selectedKeys();
+			//log.log(1,"--->server keys:" + keys);
+			
+			//TODO
+			//showKeys(keys);
 			try {
-				for (SelectionKey key : keys) {
+				Iterator<SelectionKey> it = keys.iterator();
+
+				for (; it.hasNext();) {
+					SelectionKey key = it.next();
+					it.remove();
+
 					Object attr = key.attachment();
 
 					// TODO
-					// System.out.println("--->att:"+att);
+					// //log.log(1,"--->att:"+att);
 
 					if (key.isValid()) {
 						int readyOps = key.readyOps();
-
 						if ((readyOps & SelectionKey.OP_ACCEPT) != 0) {
+							// keys.remove(key);
 							a.accept(key, this);
 						} else if (attr != null && (readyOps & SelectionKey.OP_READ) != 0) {
+							// keys.remove(key);
 							read((NioServerChannel) attr);
 						} else if (attr != null && (readyOps & SelectionKey.OP_WRITE) != 0) {
+							// keys.remove(key);
 							write((NioServerChannel) attr);
 						} else {
 							key.cancel();
@@ -205,15 +237,44 @@ public class NioServer extends NioService {
 		}
 
 		private void read(NioServerChannel nsc) {
-			nsc.read();
+			ByteBuffer b = bp.allocate();
+			int in = nsc.read(b);
+			//
+			if(in >0){
+				es.submit(new ReadHandler(nsc, b, in));
+			}
 		}
 
 		private void write(NioServerChannel nsc) {
+			//
 			nsc.write();
 		}
 
 		public void register(SocketChannel sc, int ops, Object o) throws ClosedChannelException {
 			sc.register(s, ops, o);
+		}
+
+	}
+
+	final class ReadHandler extends NioHandler implements Runnable {
+
+		private final NioServerChannel nsc;
+
+		private final ByteBuffer b;
+		private final int r;
+
+		public ReadHandler(NioServerChannel nsc, ByteBuffer b, int r) {
+			super();
+			this.nsc = nsc;
+			this.b = b;
+			this.r = r;
+		}
+
+		@Override
+		public void run() {
+			//
+			//log.log(1, "server read start");
+			nsc.read(b, r);
 		}
 
 	}
@@ -232,10 +293,13 @@ public class NioServer extends NioService {
 
 		long acceptCount;
 
-		AcceptorCouple(ServerSocketChannel ssc, DispatcherCouple d, SSLContext sslContext) {
+		private NioDataDealerFactory nioDataDealerFactory;
+
+		AcceptorCouple(ServerSocketChannel ssc, DispatcherCouple d, SSLContext sslContext, NioDataDealerFactory nioDataDealerFactory) {
 			this.ssc = ssc;
 			this.d = d;
 			this.sslContext = sslContext;
+			this.nioDataDealerFactory = nioDataDealerFactory;
 		}
 
 		@Override
@@ -256,9 +320,11 @@ public class NioServer extends NioService {
 					// d.register(cio.getSocketChannel(), SelectionKey.OP_READ, rh);
 
 					// sc.configureBlocking(false);
-					NioServerChannel nsc = new NioServerChannel(sc);
+					NioServerChannel nsc = new NioServerChannel(sc, bp);
 
 					setSocket(sc);
+
+					onConnect(nsc);
 
 					d.register(sc, SelectionKey.OP_READ, nsc);
 
@@ -267,6 +333,15 @@ public class NioServer extends NioService {
 					break;
 				}
 			}
+		}
+
+		private void onConnect(NioServerChannel nsc) {
+			NioServerDataDealer dealer = null;
+
+			dealer = nioDataDealerFactory.getNioServerDataDealer();
+
+			dealer.serverOnConnect(nsc);
+
 		}
 
 		private void setSocket(SocketChannel channel) throws SocketException {
@@ -286,15 +361,19 @@ public class NioServer extends NioService {
 		protected final ServerSocketChannel ssc;
 		private final Selector s;
 
-		AcceptorCouple a;
+		private AcceptorCouple a;
 
-		public DispatcherCouple(ServerSocketChannel ssc, ExecutorService es) throws IOException {
+		private NioDataDealerFactory nioDataDealerFactory;
+
+		public DispatcherCouple(ServerSocketChannel ssc, ExecutorService es, NioDataDealerFactory nioDataDealerFactory) throws IOException {
 			super();
 			this.ssc = ssc;
+			this.nioDataDealerFactory = nioDataDealerFactory;
 
 			s = Selector.open();
 			ssc.register(s, SelectionKey.OP_ACCEPT);
-			AcceptorCouple a = new AcceptorCouple(ssc, this, sslContext);
+			AcceptorCouple a = new AcceptorCouple(ssc, this, sslContext, nioDataDealerFactory);
+			this.a = a;
 			a.start();
 		}
 
@@ -315,6 +394,7 @@ public class NioServer extends NioService {
 				try {
 					dispatch(selector);
 				} catch (Throwable e) {
+					e.printStackTrace();
 					log.log(7, "Reader:", e);
 				}
 			}
@@ -357,13 +437,15 @@ public class NioServer extends NioService {
 				}
 
 			} catch (Throwable e) {
+				e.printStackTrace();
 				log.log(7, "Reader:", e);
 			}
 
 		}
 
 		private void read(NioServerChannel nsc) {
-			nsc.read();
+			ByteBuffer b = bp.allocate();
+			nsc.read(b);
 		}
 
 		private void write(NioServerChannel nsc) {
@@ -397,6 +479,7 @@ public class NioServer extends NioService {
 		// TODO Auto-generated method stub
 
 	}
+
 	@Override
 	public void onExit() {
 		// TODO Auto-generated method stub

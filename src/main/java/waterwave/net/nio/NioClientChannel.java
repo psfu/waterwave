@@ -4,11 +4,13 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 
+import waterwave.common.buffer.BufferPoolNIO;
+import waterwave.common.service.ThreadSharedService;
 import waterwave.net.nio.define.NioClientDataDealer;
 
-public class NioClientChannel {
+public class NioClientChannel extends ThreadSharedService {
 
-	SocketChannel channel;
+	SocketChannel sc;
 
 	// just for proxy
 	private NioServerChannel nioServerChannel;
@@ -17,22 +19,78 @@ public class NioClientChannel {
 
 	private NioClientDataDealer dealer;
 
+	private final BufferPoolNIO bp;
+
+	boolean isClosed = false;
+
+	public NioClientChannel(SocketChannel channel, BufferPoolNIO bp,NioClientDataDealer dealer) {
+		super();
+		this.sc = channel;
+		this.bp = bp;
+		this.dealer = dealer;
+	}
+
 	public int read0(ByteBuffer dst) throws IOException {
-		int r = channel.read(dst);
+		int r = sc.read(dst);
 		return r;
 	}
 
 	public int write0(ByteBuffer src) throws IOException {
-		int r = channel.write(src);
-		return r;
+		int w = sc.write(src);
+		bp.recycle(src);
+		// TODO
+		// dealer.clientAfterWrite(this, src, w);
+		return w;
 	}
 
-	public void read() {
-		dealer.clientOnData(this);
+	public int read(ByteBuffer b) {
+		// ByteBuffer b = bp.allocate();
+		int in = -1;
+		try {
+			in = read0(b);
+			//log.log(1, "-------->c read:", in);
+			if (in < 0) {
+				//log.log(1, "-------->!!:", in);
+				bp.recycle(b);
+				close();
+				dealer.clientOnClose(this);
+			} else if (in ==0){
+				//log.log(1, "-------->!!!:", in);
+			}
+
+		} catch (IOException e) {
+			bp.recycle(b);
+			e.printStackTrace();
+			close();
+		}
+		return in;
 	}
 
-	public void write() {
+	public void read(ByteBuffer b, int in) {
+		//log.log(1, "client call read.");
+		dealer.clientOnData(this, b, in);
+	}
+
+	public void write(ByteBuffer b) {
 		// TODO Auto-generated method stub
+	}
+
+	public void close() {
+		close0();
+		if (dealer != null) {
+			dealer.clientOnClose(this);
+		}
+	}
+
+	public void close0() {
+		this.isClosed = true;
+		try {
+			log.log(2, "client channel close ing", sc);
+			sc.close();
+		} catch (IOException e) {
+			//
+			e.printStackTrace();
+		}
 	}
 
 	public NioClientDataDealer getDealer() {
@@ -41,11 +99,6 @@ public class NioClientChannel {
 
 	public void setDealer(NioClientDataDealer dealer) {
 		this.dealer = dealer;
-	}
-
-	public NioClientChannel(SocketChannel channel) {
-		super();
-		this.channel = channel;
 	}
 
 	public NioServerChannel getNioServerChannel() {
@@ -65,11 +118,11 @@ public class NioClientChannel {
 	}
 
 	public SocketChannel getChannel() {
-		return channel;
+		return sc;
 	}
 
 	public void setChannel(SocketChannel channel) {
-		this.channel = channel;
+		this.sc = channel;
 	}
 
 	public static void main(String[] args) {
@@ -77,10 +130,12 @@ public class NioClientChannel {
 
 	}
 
-	public void close() {
-		// TODO Auto-generated method stub
+	public void setClosed(boolean isClosed) {
+		this.isClosed = isClosed;
+	}
 
-
+	public boolean isClosed() {
+		return isClosed;
 	}
 
 }
