@@ -127,6 +127,7 @@ public class ProxyAioServerService extends SingleThreadService{
 		ProxyRouter.staticRemote = new InetSocketAddress(ip , remortPort);
 		ProxyRouter.staticRemoteIp = ip;
 		ProxyRouter.staticRemotePort = remortPort;
+
 		this.start();
 		server.run();
 		//client.run();

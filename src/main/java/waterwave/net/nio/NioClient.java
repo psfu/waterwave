@@ -45,9 +45,9 @@ public class NioClient extends NioService {
 	DispatcherReader d;
 
 	protected NioDataDealerFactory nioDataDealerFactory;
-
+	
 	private BufferPoolNIO bp;
-
+	
 	public NioClient(ExecutorService es, BufferPoolNIO bp, NioDataDealerFactory nioDataDealerFactory) throws IOException {
 		// ExecutorService channelWorkers = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), Executors.defaultThreadFactory());
 		this.nioDataDealerFactory = nioDataDealerFactory;
@@ -55,6 +55,7 @@ public class NioClient extends NioService {
 
 		d = new DispatcherReader(es);
 		d.start();
+
 	}
 
 	public NioClientChannel createConnect(InetAddress ip, int port, NioClientDataDealer dealer) throws IOException {

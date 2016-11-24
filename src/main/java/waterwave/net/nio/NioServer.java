@@ -70,7 +70,7 @@ public class NioServer extends NioService {
 		this.couple = couple;
 		this.nioDataDealerFactory = nioDataDealerFactory;
 		this.bp = bp;
-
+		
 		if (secure) {
 			try {
 				createSSLContext();
@@ -323,7 +323,6 @@ public class NioServer extends NioService {
 					NioServerChannel nsc = new NioServerChannel(sc, bp);
 
 					setSocket(sc);
-
 					onConnect(nsc);
 
 					d.register(sc, SelectionKey.OP_READ, nsc);
@@ -343,6 +342,7 @@ public class NioServer extends NioService {
 			dealer.serverOnConnect(nsc);
 
 		}
+
 
 		private void setSocket(SocketChannel channel) throws SocketException {
 			Socket socket = channel.socket();

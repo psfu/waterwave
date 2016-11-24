@@ -135,6 +135,7 @@ public class ProxyNioServerService extends SingleThreadService{
 		ProxyRouter.staticRemoteIp = ip;
 		ProxyRouter.staticRemotePort = remortPort;
 		
+
 		this.start();
 		server.run();
 		//client.run();
