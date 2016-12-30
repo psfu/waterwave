@@ -18,8 +18,8 @@ package waterwave.proxy.bio;
 
 import java.io.IOException;
 
-import waterwave.common.buffer.BufferSp;
-import waterwave.common.service.ThreadSharedService;
+import shuisea.common.buffer.BufferSp;
+import shuisea.common.service.ThreadSharedService;
 import waterwave.net.bio.BioClient;
 import waterwave.net.bio.BioServer;
 import waterwave.net.bio.BioServerChannel;

@@ -15,7 +15,7 @@
  * 
  */
 
-package waterwave.common.util;
+package shuisea.common.util;
 
 
 import java.io.IOException;
@@ -25,8 +25,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Properties;
 
-import waterwave.common.log.Logger;
-import waterwave.common.log.SimpleLogger;
+import shuisea.common.log.Logger;
+import shuisea.common.log.SimpleLogger;
 
 public class Common {
 

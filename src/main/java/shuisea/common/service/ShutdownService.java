@@ -15,7 +15,7 @@
  * 
  */
 
-package waterwave.common.service;
+package shuisea.common.service;
 
 import java.util.Properties;
 

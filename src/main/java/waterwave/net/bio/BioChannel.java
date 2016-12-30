@@ -16,7 +16,7 @@
  */
 package waterwave.net.bio;
 
-import waterwave.common.service.ThreadSharedService;
+import shuisea.common.service.ThreadSharedService;
 
 public abstract class BioChannel  extends ThreadSharedService {
 

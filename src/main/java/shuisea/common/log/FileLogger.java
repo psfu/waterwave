@@ -15,56 +15,32 @@
  * 
  */
 
-package waterwave.common.buffer;
+package shuisea.common.log;
 
-public class BufferSp {
+import java.io.PrintWriter;
 
-	public int size;
-	public int pos = 0;
-	public int id = 0;
-	public int stat = 0;
-
-	public byte[] b;
-
-	public long originDataPosEnd = 0;
-	public long originDataPosStart = 0;
-	public String originDataDesc;
-
-	public BufferSp(int size) {
-		this.size = size;
-		this.b = new byte[size];
-	}
-
-	public BufferSp(int id, int size) {
-		this.id = id;
-		this.size = size;
-		this.b = new byte[size];
-	}
-
-	public byte[] getBytes() {
-		return b;
-	}
-
-	public int getPos() {
-		return pos;
-	}
-
-	public void setPos(int pos) {
-		this.pos = pos;
-	}
+public class FileLogger extends Logger {
 
 	@Override
-	public String toString() {
-		//
-		return "id:" + id + ", pos:" + pos + " " ;
+	public PrintWriter getErrorWriter() {
+		return null;
 	}
-
-	BufferSp() {
+	
+	@Override
+	public void log(int level, Object o) {
+		
 	}
-
+	
+	@Override
+	public void log(int level, Object... os) {
+		
+	}
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
 	}
+
+	
 
 }

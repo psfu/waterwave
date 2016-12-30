@@ -15,7 +15,7 @@
  * 
  */
 
-package waterwave.common.log;
+package shuisea.common.log;
 
 import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;

@@ -18,8 +18,8 @@ package waterwave.proxy;
 
 import java.util.Properties;
 
-import waterwave.common.log.Logger;
-import waterwave.common.util.Common;
+import shuisea.common.log.Logger;
+import shuisea.common.util.Common;
 import waterwave.proxy.aio.ProxyAioServerService;
 
 public class ProxyServerStartUp {

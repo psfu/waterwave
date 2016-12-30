@@ -22,8 +22,8 @@ import java.net.Socket;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 
-import waterwave.common.buffer.BufferPool;
-import waterwave.common.service.SingleThreadService;
+import shuisea.common.buffer.BufferPool;
+import shuisea.common.service.SingleThreadService;
 import waterwave.net.bio.define.BioClientHandler;
 
 public class BioClient  extends SingleThreadService {

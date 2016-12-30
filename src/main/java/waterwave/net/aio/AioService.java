@@ -16,7 +16,7 @@
  */
 package waterwave.net.aio;
 
-import waterwave.common.service.ThreadSharedService;
+import shuisea.common.service.ThreadSharedService;
 
 public abstract class AioService extends ThreadSharedService{
 

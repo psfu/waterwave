@@ -14,10 +14,10 @@
  * limitations under the License.
  * 
  */
-package waterwave.common.service;
+package shuisea.common.service;
 
-import waterwave.common.log.Logger;
-import waterwave.common.log.SimpleLogger;
+import shuisea.common.log.Logger;
+import shuisea.common.log.SimpleLogger;
 
 public class ThreadSharedService {
 	protected final Logger log = new SimpleLogger(true);

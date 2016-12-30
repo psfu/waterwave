@@ -22,7 +22,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
 
-import waterwave.common.buffer.BufferTools;
+import shuisea.common.buffer.BufferTools;
 import waterwave.net.aio.define.AioClientDataDealer;
 
 public final class AioClientChannel extends AioChannel{

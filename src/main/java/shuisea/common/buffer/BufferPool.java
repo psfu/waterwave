@@ -15,14 +15,14 @@
  * 
  */
 
-package waterwave.common.buffer;
+package shuisea.common.buffer;
 
 import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import waterwave.common.log.Logger;
-import waterwave.common.log.SimpleLogger;
+import shuisea.common.log.Logger;
+import shuisea.common.log.SimpleLogger;
 
 
 

@@ -15,32 +15,39 @@
  * 
  */
 
-package waterwave.common.log;
+package shuisea.common.buffer;
 
-import java.io.PrintWriter;
+import java.nio.ByteBuffer;
 
-public class FileLogger extends Logger {
+public class BufferTools {
 
-	@Override
-	public PrintWriter getErrorWriter() {
-		return null;
-	}
+	private final static BufferPoolNIO bp = new BufferPoolNIO(2 * 1024, 32 * 1024);
 	
-	@Override
-	public void log(int level, Object o) {
+	public final static ByteBuffer getBuffer() {
+		//ByteBuffer input = ByteBuffer.allocate(16 * 1024);
+		ByteBuffer input = bp.allocate();
+		return input;
+	}
+
+	public final static void returnBuffer(ByteBuffer buffer) {
+		bp.recycle(buffer);
 		
 	}
-	
-	@Override
-	public void log(int level, Object... os) {
-		
+	public final static byte[] getBuffer2Byte(ByteBuffer b) {
+		int p = b.position();
+		byte[] r = new byte[p];
+		if (b.position() != 0) {
+			b.flip();
+		}
+		b.get(r, 0, p);
+
+		return r;
 	}
-	
+
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
 	}
 
-	
 
 }

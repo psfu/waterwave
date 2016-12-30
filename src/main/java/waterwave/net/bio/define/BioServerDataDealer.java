@@ -18,7 +18,7 @@ package waterwave.net.bio.define;
 
 import java.nio.ByteBuffer;
 
-import waterwave.common.buffer.BufferSp;
+import shuisea.common.buffer.BufferSp;
 import waterwave.net.bio.BioServerChannel;
 
 public interface BioServerDataDealer {

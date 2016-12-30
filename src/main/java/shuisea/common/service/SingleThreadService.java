@@ -15,12 +15,12 @@
  * 
  */
 
-package waterwave.common.service;
+package shuisea.common.service;
 
 import java.util.Properties;
 
-import waterwave.common.log.Logger;
-import waterwave.common.log.SimpleLogger;
+import shuisea.common.log.Logger;
+import shuisea.common.log.SimpleLogger;
 
 
 
@@ -33,7 +33,9 @@ public abstract class SingleThreadService extends Thread implements Runnable {
 	
 	public abstract void onTime();
 	
-	
+	public static void log(Object o) {
+		Logger.log(o);
+	}
 
 	public void sleep(int time) {
 		try {

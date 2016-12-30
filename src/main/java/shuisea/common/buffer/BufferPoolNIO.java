@@ -14,7 +14,7 @@
  * limitations under the License.
  * 
  */
-package waterwave.common.buffer;
+package shuisea.common.buffer;
 
 import java.nio.ByteBuffer;
 import java.util.concurrent.locks.ReentrantLock;
