@@ -116,6 +116,10 @@ public class ProxyAioServerService extends SingleThreadService{
 		ipStr = "10.213.33.176";
 		ipStr = "127.0.0.1";
 		
+		
+		remortPort = pp.getInt("remortPort", remortPort);
+		ipStr = pp.getString("ipStr", ipStr);
+		
 		InetAddress ip = null;
 		try {
 			ip = InetAddress.getByName(ipStr);

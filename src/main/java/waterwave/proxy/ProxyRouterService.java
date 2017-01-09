@@ -18,4 +18,8 @@ package waterwave.proxy;
 
 public class ProxyRouterService {
 
+	enum type {
+		aio, nio, bio
+	}
+
 }

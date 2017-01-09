@@ -55,6 +55,8 @@ public class ProxyBioHanlder extends ThreadSharedService implements BioServerHan
 		
 		for(;;){
 			if(cc.isClose) {
+				//
+				sc.close();
 				break;
 			}
 			//log.log(1, "ProxyBioHanlder: server cc reading...");
@@ -83,6 +85,8 @@ public class ProxyBioHanlder extends ThreadSharedService implements BioServerHan
 			//log.log(1, "ProxyBioHanlder: client runing....");
 			for(;;){
 				if(sc.isClose) {
+					//
+					cc.close();
 					break;
 				}
 				
@@ -108,13 +112,18 @@ public class ProxyBioHanlder extends ThreadSharedService implements BioServerHan
 	@Override
 	public void serverOnError(BioServerChannel c, Throwable e, BufferSp b) {
 		// TODO Auto-generated method stub
+		//c.close();
+		
+		cc.close();
+		sc.close();
 		
 	}
 
 	@Override
 	public void serverOnClose(BioServerChannel channel) {
 		// TODO Auto-generated method stub
-		
+		cc.close();
+		sc.close();
 	}
 
 }

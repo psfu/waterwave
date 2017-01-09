@@ -291,6 +291,7 @@ public class ProxyAioDataDealer extends ThreadSharedService implements AioServer
 	public void serverOnClose(AioServerChannel channel) {
 		log.log(3, "dealer:serverOnClose...");
 		sc.close();
+		cc.close();
 	}
 
 	@Override

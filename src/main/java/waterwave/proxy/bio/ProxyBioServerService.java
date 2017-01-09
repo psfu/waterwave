@@ -66,10 +66,9 @@ public class ProxyBioServerService extends SingleThreadService {
 		new ShutdownService(this);
 
 		//
-		int poolSize = Runtime.getRuntime().availableProcessors() * 5;
+		int poolSize = Runtime.getRuntime().availableProcessors() * 10;
 
-		ExecutorService serverES = Executors.newFixedThreadPool(poolSize, Executors.defaultThreadFactory());
-		ExecutorService clientES = Executors.newFixedThreadPool(poolSize, Executors.defaultThreadFactory());
+		
 
 		ProxyBioDataDealerFactory bioDataDealerFactory = new ProxyBioDataDealerFactory();
 
@@ -83,7 +82,10 @@ public class ProxyBioServerService extends SingleThreadService {
 
 		PropertiesUtil pp = new PropertiesUtil(p);
 		serverPort = pp.getInt("serverPort", serverPort);
-		poolSize = pp.getInt("serverPort", poolSize);
+		poolSize = pp.getInt("poolSize", poolSize);
+		
+		ExecutorService serverES = Executors.newFixedThreadPool(poolSize, Executors.defaultThreadFactory());
+		ExecutorService clientES = Executors.newFixedThreadPool(poolSize, Executors.defaultThreadFactory());
 
 		BufferPool bp1 = new BufferPool(bpSize, bpBufferSize);
 		BufferPool bp2 = new BufferPool(bpSize, bpBufferSize);
@@ -112,6 +114,10 @@ public class ProxyBioServerService extends SingleThreadService {
 		ipStr = "www.bing.com";
 		ipStr = "10.213.33.176";
 		ipStr = "127.0.0.1";
+		
+		remortPort = pp.getInt("remortPort", remortPort);
+		ipStr = pp.getString("ipStr", ipStr);
+		
 
 		InetAddress ip = null;
 		

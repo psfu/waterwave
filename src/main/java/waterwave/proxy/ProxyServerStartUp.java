@@ -20,11 +20,15 @@ import java.util.Properties;
 
 import shuisea.common.log.Logger;
 import shuisea.common.util.Common;
+import shuisea.common.util.PropertiesUtil;
+import waterwave.proxy.ProxyRouterService.type;
 import waterwave.proxy.aio.ProxyAioServerService;
+import waterwave.proxy.bio.ProxyBioServerService;
+import waterwave.proxy.nio.ProxyNioServerService;
 
 public class ProxyServerStartUp {
 
-	static final String initPpFile = "wwProxy.properties";
+	static final String initPpFile = "sp.properties";
 
 	public static void startUp(String[] args) {
 		
@@ -45,9 +49,30 @@ public class ProxyServerStartUp {
 
 		Logger.log(pp);
 		
+		
+		
+		PropertiesUtil ppp = new PropertiesUtil(pp);
+		type t = ppp.getEnum("type", ProxyRouterService.type.class, ProxyRouterService.type.aio);
+		
+		
 		//service start up
-		ProxyAioServerService cs = new ProxyAioServerService();
-		cs.init(pp);
+		switch (t) {
+		case aio:
+			ProxyAioServerService cs = new ProxyAioServerService();
+			cs.init(pp);
+			break;
+		case nio:
+			ProxyNioServerService ns = new ProxyNioServerService();
+			ns.init(pp);
+			break;
+		case bio:
+			ProxyBioServerService bs = new ProxyBioServerService();
+			bs.init(pp);
+			break;
+		}
+		
+		
+		
 	}
 
 	public static void main(String[] args) {
