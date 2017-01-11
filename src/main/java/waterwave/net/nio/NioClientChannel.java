@@ -10,7 +10,7 @@ import waterwave.net.nio.define.NioClientDataDealer;
 
 public class NioClientChannel extends ThreadSharedService {
 
-	SocketChannel sc;
+	protected SocketChannel sc;
 
 	// just for proxy
 	private NioServerChannel nioServerChannel;

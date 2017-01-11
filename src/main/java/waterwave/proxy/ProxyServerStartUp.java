@@ -25,6 +25,7 @@ import waterwave.proxy.ProxyRouterService.type;
 import waterwave.proxy.aio.ProxyAioServerService;
 import waterwave.proxy.bio.ProxyBioServerService;
 import waterwave.proxy.nio.ProxyNioServerService;
+import waterwave.proxy.nioSingle.ProxyNioSingleServerService;
 
 public class ProxyServerStartUp {
 
@@ -64,6 +65,10 @@ public class ProxyServerStartUp {
 		case nio:
 			ProxyNioServerService ns = new ProxyNioServerService();
 			ns.init(pp);
+			break;
+		case single:
+			ProxyNioSingleServerService ss = new ProxyNioSingleServerService();
+			ss.init(pp);
 			break;
 		case bio:
 			ProxyBioServerService bs = new ProxyBioServerService();

@@ -83,9 +83,15 @@ public class ProxyAioServerService extends SingleThreadService{
 		threadNum = pp.getInt("threadNum", threadNum);
 		serverPort = pp.getInt("serverPort", serverPort);
 		
+		boolean samePool = pp.getBoolean("samePool", false);
 		
 		ExecutorService serverES = Executors.newFixedThreadPool(threadNum, Executors.defaultThreadFactory());
 		ExecutorService clientES = Executors.newFixedThreadPool(threadNum, Executors.defaultThreadFactory());
+		
+		if(samePool) {
+			clientES = serverES;
+		} 
+		
 		
 		AioServer server = null;
 		AioClient client = null;

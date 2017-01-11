@@ -78,12 +78,12 @@ public class ProxyNioDataDealer extends ThreadSharedService implements NioServer
 
 	@Override
 	public void serverOnData(NioServerChannel channel, ByteBuffer b, int bytes) {
-		//log.log(1, "serverOnData...", b);
-		
+		// log.log(1, "serverOnData...", b);
+
 		// TODO
-		//Logger.log(new String(BufferTools.getBuffer2Byte(b)));
-		//Logger.log(BufferTools.getBuffer2Byte(b));
-		
+		// Logger.log(new String(BufferTools.getBuffer2Byte(b)));
+		// Logger.log(BufferTools.getBuffer2Byte(b));
+
 		if (cc == null) {
 			if (clientIniting) {
 				log.log(9, "serverOnData clientIniting long ...............");
@@ -136,9 +136,9 @@ public class ProxyNioDataDealer extends ThreadSharedService implements NioServer
 			sc.write0(buffer);
 		} catch (IOException e) {
 			e.printStackTrace();
-//			buffer.position(buffer.limit());
-//			sq.add(buffer);
-//			writeServerFromQueue();
+			// buffer.position(buffer.limit());
+			// sq.add(buffer);
+			// writeServerFromQueue();
 		}
 	}
 
@@ -148,9 +148,9 @@ public class ProxyNioDataDealer extends ThreadSharedService implements NioServer
 			cc.write0(buffer);
 		} catch (IOException e) {
 			e.printStackTrace();
-//			buffer.position(buffer.limit());
-//			cq.add(buffer);
-//			writeClientFromQueue();
+			// buffer.position(buffer.limit());
+			// cq.add(buffer);
+			// writeClientFromQueue();
 		}
 	}
 
@@ -179,9 +179,9 @@ public class ProxyNioDataDealer extends ThreadSharedService implements NioServer
 				cq.poll();
 				BufferTools.returnBuffer(b1);
 			}
-			//log.log(1, "writeClientFromQueue merging...", r0, s1);
+			// log.log(1, "writeClientFromQueue merging...", r0, s1);
 		}
-		//log.log(1, "writeClientFromQueue write...", b0.position());
+		// log.log(1, "writeClientFromQueue write...", b0.position());
 		writeToClient0(b0);
 	}
 
@@ -206,9 +206,9 @@ public class ProxyNioDataDealer extends ThreadSharedService implements NioServer
 				sq.poll();
 				BufferTools.returnBuffer(b1);
 			}
-			//log.log(1, "writeServerFromQueue merging...", r0, s1);
+			// log.log(1, "writeServerFromQueue merging...", r0, s1);
 		}
-		//log.log(1, "writeServerFromQueue write...", b0.position());
+		// log.log(1, "writeServerFromQueue write...", b0.position());
 		writeToServer0(b0);
 	}
 
@@ -284,12 +284,12 @@ public class ProxyNioDataDealer extends ThreadSharedService implements NioServer
 
 	@Override
 	public void clientOnData(NioClientChannel channel, ByteBuffer b, int bytes) {
-		//log.log(1, "clientOnData...", b);
+		// log.log(1, "clientOnData...", b);
 
 		// TODO
-		//Logger.log(new String(BufferTools.getBuffer2Byte(b)));
-		//Logger.log(BufferTools.getBuffer2Byte(b));
-		
+		// Logger.log(new String(BufferTools.getBuffer2Byte(b)));
+		// Logger.log(BufferTools.getBuffer2Byte(b));
+
 		if (cc == null) {
 			cc = channel;
 		}
@@ -300,7 +300,7 @@ public class ProxyNioDataDealer extends ThreadSharedService implements NioServer
 
 	@Override
 	public void clientAfterWrite(NioClientChannel channel, ByteBuffer buffer, int bytes) {
-		
+
 		chekcClientQueue();
 
 	}
@@ -334,7 +334,7 @@ public class ProxyNioDataDealer extends ThreadSharedService implements NioServer
 
 	@Override
 	public void clientOnClose(NioClientChannel channel) {
-		if(!sc.isClosed()){
+		if (!sc.isClosed()) {
 			sc.close();
 		}
 	}
@@ -349,6 +349,5 @@ public class ProxyNioDataDealer extends ThreadSharedService implements NioServer
 		this.client = client;
 
 	}
-
 
 }

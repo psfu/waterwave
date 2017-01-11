@@ -15,28 +15,27 @@
  * 
  */
 
-package waterwave.proxy.nio;
+package waterwave.proxy.nioSingle;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.Properties;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-import shuisea.common.buffer.BufferPoolNIO;
+import shuisea.common.buffer.BufferPoolSingleNIO;
 import shuisea.common.service.ShutdownService;
 import shuisea.common.service.SingleThreadService;
 import shuisea.common.util.PropertiesUtil;
 import waterwave.net.nio.NioClient;
-import waterwave.net.nio.NioServer;
+import waterwave.net.nioSingle.NioSingleClient;
+import waterwave.net.nioSingle.NioSingleServer;
 import waterwave.proxy.router.ProxyRouter;
 
-public class ProxyNioServerService extends SingleThreadService {
+public class ProxyNioSingleServerService extends SingleThreadService {
 
 	public static void main(String[] args) {
-		ProxyNioServerService service = new ProxyNioServerService();
+		ProxyNioSingleServerService service = new ProxyNioSingleServerService();
 
 		Properties pp = new Properties();
 		service.init(pp);
@@ -83,25 +82,22 @@ public class ProxyNioServerService extends SingleThreadService {
 		threadNum = pp.getInt("threadNum", threadNum);
 		serverPort = pp.getInt("serverPort", serverPort);
 
-		ExecutorService serverES = Executors.newFixedThreadPool(threadNum, Executors.defaultThreadFactory());
-		ExecutorService clientES = Executors.newFixedThreadPool(threadNum, Executors.defaultThreadFactory());
-
-		NioServer server = null;
-		NioClient client = null;
+		NioSingleServer server = null;
+		NioSingleClient client = null;
 
 		int bpSize = 200;
 		int bpBufferSize = 200 * 1024;
 
-		BufferPoolNIO bp1 = new BufferPoolNIO(bpSize, bpBufferSize);
-		BufferPoolNIO bp2 = new BufferPoolNIO(bpSize, bpBufferSize);
+		BufferPoolSingleNIO bp1 = new BufferPoolSingleNIO(bpSize, bpBufferSize);
 
-		ProxyNioDataDealerFactory nioDataDealerFactory = new ProxyNioDataDealerFactory();
+		ProxyNioSingleDataDealerFactory nioDataDealerFactory = new ProxyNioSingleDataDealerFactory();
 		try {
-			server = new NioServer(serverPort, serverES, false, false, bp1, nioDataDealerFactory);
-			client = new NioClient(clientES, bp2, nioDataDealerFactory);
+			server = new NioSingleServer(serverPort, bp1, nioDataDealerFactory);
+			client = new NioSingleClient(bp1, server, nioDataDealerFactory);
 
 		} catch (IOException e) {
 			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 		nioDataDealerFactory.setServer(server);
 		nioDataDealerFactory.setClient(client);
@@ -137,7 +133,8 @@ public class ProxyNioServerService extends SingleThreadService {
 		ProxyRouter.staticRemotePort = remortPort;
 
 		this.start();
-		server.run();
+		//server.run();
+		server.start();
 		// client.run();
 
 		log.log(9, "init finished");

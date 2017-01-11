@@ -14,12 +14,24 @@
  * limitations under the License.
  * 
  */
-package waterwave.proxy;
 
-public class ProxyRouterService {
+package waterwave.net.nioSingle.define;
 
-	enum type {
-		aio, nio, single, bio
-	}
+import java.nio.ByteBuffer;
 
+import waterwave.net.nioSingle.NioSingleClientChannel;
+
+
+public interface NioSingleClientDataDealer {
+
+    
+	void clientBeforeRead(NioSingleClientChannel channel);
+	void clientOnConnect(NioSingleClientChannel channel);
+	void clientOnData(NioSingleClientChannel channel, ByteBuffer b, int bytes);
+	void clientAfterWrite(NioSingleClientChannel channel, ByteBuffer buffer, int bytes);
+	void clientOnError(NioSingleClientChannel channel,Throwable exc, ByteBuffer attachment);
+    void clientOnClose(NioSingleClientChannel channel);
+
+	boolean clientAcceptsMessages();
+	
 }
