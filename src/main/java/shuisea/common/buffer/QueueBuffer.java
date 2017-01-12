@@ -27,10 +27,10 @@ import shuisea.common.log.SimpleLogger;
 
 public class QueueBuffer {
 
-	LinkedBlockingDeque<BufferSp> bqr = new LinkedBlockingDeque<BufferSp>(500);
-	LinkedBlockingDeque<BufferSp> bqw = new LinkedBlockingDeque<BufferSp>(500);
+	LinkedBlockingDeque<BufferSimple> bqr = new LinkedBlockingDeque<BufferSimple>(500);
+	LinkedBlockingDeque<BufferSimple> bqw = new LinkedBlockingDeque<BufferSimple>(500);
 
-	ArrayList<BufferSp> bs = null;
+	ArrayList<BufferSimple> bs = null;
 
 	public Logger log = new SimpleLogger();
 
@@ -45,9 +45,9 @@ public class QueueBuffer {
 	public QueueBuffer(int size, int bsize) {
 		this.size = size;
 		this.bsize = bsize;
-		bs = new ArrayList<BufferSp>(size);
+		bs = new ArrayList<BufferSimple>(size);
 		for (; i < size; i++) {
-			BufferSp b = new BufferSp(i, bsize);
+			BufferSimple b = new BufferSimple(i, bsize);
 
 			bs.add(b);
 			bqr.add(b);
@@ -67,8 +67,8 @@ public class QueueBuffer {
 
 	}
 
-	public BufferSp getReadBuffer() {
-		BufferSp b;
+	public BufferSimple getReadBuffer() {
+		BufferSimple b;
 		try {
 			log.log(1, "take bqr", bqr);
 			b = bqr.take();
@@ -82,8 +82,8 @@ public class QueueBuffer {
 		return b;
 	}
 
-	public BufferSp getReadBuffer(int timeout) {
-		BufferSp b;
+	public BufferSimple getReadBuffer(int timeout) {
+		BufferSimple b;
 		try {
 			log.log(1, "take bqr timeout", bqr , timeout);
 			// b = bqr.take();
@@ -101,8 +101,8 @@ public class QueueBuffer {
 		return b;
 	}
 
-	public BufferSp getWriteBuffer() {
-		BufferSp b;
+	public BufferSimple getWriteBuffer() {
+		BufferSimple b;
 		try {
 			log.log(1, "take bqw", bqw);
 			b = bqw.take();
@@ -116,8 +116,8 @@ public class QueueBuffer {
 		return b;
 	}
 
-	public BufferSp getWriteBuffer(int timeout) {
-		BufferSp b;
+	public BufferSimple getWriteBuffer(int timeout) {
+		BufferSimple b;
 		try {
 			log.log(1, "take bqw timeout", bqw , timeout);
 			b = bqw.poll(timeout, TimeUnit.MILLISECONDS);
@@ -134,7 +134,7 @@ public class QueueBuffer {
 		return b;
 	}
 
-	public void finishReadBuffer(BufferSp b) {
+	public void finishReadBuffer(BufferSimple b) {
 		if (b == null) {
 			return;
 		}
@@ -148,7 +148,7 @@ public class QueueBuffer {
 		log.log(1, "in bqw", bqw);
 	}
 
-	public void giveupReadBuffer(BufferSp b) {
+	public void giveupReadBuffer(BufferSimple b) {
 		if (b == null) {
 			return;
 		}
@@ -166,7 +166,7 @@ public class QueueBuffer {
 		log.log(1, "giveup in bqr", bqr);
 	}
 
-	public void finishWriteBuffer(BufferSp b) {
+	public void finishWriteBuffer(BufferSimple b) {
 		if (b == null) {
 			return;
 		}
@@ -184,7 +184,7 @@ public class QueueBuffer {
 		log.log(1, "in bqr", bqr);
 	}
 
-	public void giveupWriteBuffer(BufferSp b) {
+	public void giveupWriteBuffer(BufferSimple b) {
 		if (b == null) {
 			return;
 		}

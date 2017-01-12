@@ -17,14 +17,14 @@
 
 package waterwave.net.bio.define;
 
-import shuisea.common.buffer.BufferSp;
+import shuisea.common.buffer.BufferSimple;
 import waterwave.net.bio.BioServerChannel;
 
 public interface BioServerHandler extends Runnable{
 	
 	public void init(BioServerChannel c);
 
-	void serverOnError(BioServerChannel c,Throwable e, BufferSp b);
+	void serverOnError(BioServerChannel c,Throwable e, BufferSimple b);
 	void serverOnClose(BioServerChannel channel);
 	
 

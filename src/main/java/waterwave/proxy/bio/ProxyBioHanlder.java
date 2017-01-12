@@ -18,7 +18,7 @@ package waterwave.proxy.bio;
 
 import java.io.IOException;
 
-import shuisea.common.buffer.BufferSp;
+import shuisea.common.buffer.BufferSimple;
 import shuisea.common.service.ThreadSharedService;
 import waterwave.net.bio.BioClient;
 import waterwave.net.bio.BioServer;
@@ -60,7 +60,7 @@ public class ProxyBioHanlder extends ThreadSharedService implements BioServerHan
 				break;
 			}
 			//log.log(1, "ProxyBioHanlder: server cc reading...");
-			BufferSp bc = this.cc.read();
+			BufferSimple bc = this.cc.read();
 			
 			//Logger.log(new String(bc.b, 0, bc.pos));
 			
@@ -91,7 +91,7 @@ public class ProxyBioHanlder extends ThreadSharedService implements BioServerHan
 				}
 				
 				//log.log(1, "ProxyBioHanlder: client sc reading...");
-				BufferSp bs = this.sc.read();
+				BufferSimple bs = this.sc.read();
 				
 				//Logger.log(new String(bs.b, 0, bs.pos));
 				
@@ -110,7 +110,7 @@ public class ProxyBioHanlder extends ThreadSharedService implements BioServerHan
 	}
 
 	@Override
-	public void serverOnError(BioServerChannel c, Throwable e, BufferSp b) {
+	public void serverOnError(BioServerChannel c, Throwable e, BufferSimple b) {
 		// TODO Auto-generated method stub
 		//c.close();
 		

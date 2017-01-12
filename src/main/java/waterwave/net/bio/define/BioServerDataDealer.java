@@ -18,14 +18,14 @@ package waterwave.net.bio.define;
 
 import java.nio.ByteBuffer;
 
-import shuisea.common.buffer.BufferSp;
+import shuisea.common.buffer.BufferSimple;
 import waterwave.net.bio.BioServerChannel;
 
 public interface BioServerDataDealer {
 	void serverOnConnect(BioServerChannel c);
 	void serverBeforeRead(BioServerChannel channel);
-	void serverOnData(BioServerChannel c, BufferSp b);
-	void serverAfterWrite(BioServerChannel c, BufferSp b, int count);
+	void serverOnData(BioServerChannel c, BufferSimple b);
+	void serverAfterWrite(BioServerChannel c, BufferSimple b, int count);
 	void serverOnError(BioServerChannel c,Throwable e, ByteBuffer b);
 	void serverOnClose(BioServerChannel channel);
 	

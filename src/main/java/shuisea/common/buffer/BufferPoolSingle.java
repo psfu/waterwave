@@ -25,8 +25,8 @@ import shuisea.common.log.SimpleLogger;
 
 public final class BufferPoolSingle {
 
-	LinkedList<BufferSp> bq = new LinkedList<BufferSp>();
-	ArrayList<BufferSp> bs = null;
+	LinkedList<BufferSimple> bq = new LinkedList<BufferSimple>();
+	ArrayList<BufferSimple> bs = null;
 
 	public Logger log = new SimpleLogger();
 
@@ -45,9 +45,9 @@ public final class BufferPoolSingle {
 	 */
 	public BufferPoolSingle(int size, int bsize) {
 		this.size = size;
-		bs = new ArrayList<BufferSp>(size);
+		bs = new ArrayList<BufferSimple>(size);
 		for (; i < size; i++) {
-			BufferSp b = new BufferSp(i, bsize);
+			BufferSimple b = new BufferSimple(i, bsize);
 			bs.add(b);
 			bq.add(b);
 		}
@@ -64,8 +64,8 @@ public final class BufferPoolSingle {
 		}
 	}
 
-	public BufferSp getBuffer() {
-		BufferSp b;
+	public BufferSimple getBuffer() {
+		BufferSimple b;
 
 		b = bq.getFirst();
 		b.stat = 1;
@@ -75,7 +75,7 @@ public final class BufferPoolSingle {
 		return b;
 	}
 
-	public void finishBuffer(BufferSp b) {
+	public void finishBuffer(BufferSimple b) {
 		if (b.stat == 0) {
 			return;
 		}
@@ -91,7 +91,7 @@ public final class BufferPoolSingle {
 		--c;
 	}
 
-	public void giveupBuffer(BufferSp b) {
+	public void giveupBuffer(BufferSimple b) {
 		finishBuffer(b);
 	}
 

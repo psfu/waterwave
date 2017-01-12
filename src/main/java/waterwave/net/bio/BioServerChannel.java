@@ -22,7 +22,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 import shuisea.common.buffer.BufferPool;
-import shuisea.common.buffer.BufferSp;
+import shuisea.common.buffer.BufferSimple;
 import waterwave.net.bio.define.BioServerHandler;
 
 public class BioServerChannel extends BioChannel{
@@ -50,9 +50,9 @@ public class BioServerChannel extends BioChannel{
 //		this.dealer = dealer;
 //	}
 
-	public final BufferSp read() {
+	public final BufferSimple read() {
 		InputStream is = null;
-		BufferSp b = bp.getBuffer();
+		BufferSimple b = bp.getBuffer();
 		try {
 			is = s.getInputStream();
 
@@ -102,7 +102,7 @@ public class BioServerChannel extends BioChannel{
 		return b;
 	}
 
-	public final void write(BufferSp b) {
+	public final void write(BufferSimple b) {
 		OutputStream or = null;
 		try {
 			or = s.getOutputStream();

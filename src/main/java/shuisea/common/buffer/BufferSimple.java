@@ -17,7 +17,7 @@
 
 package shuisea.common.buffer;
 
-public class BufferSp {
+public class BufferSimple {
 
 	public int size;
 	public int pos = 0;
@@ -30,12 +30,12 @@ public class BufferSp {
 	public long originDataPosStart = 0;
 	public String originDataDesc;
 
-	public BufferSp(int size) {
+	public BufferSimple(int size) {
 		this.size = size;
 		this.b = new byte[size];
 	}
 
-	public BufferSp(int id, int size) {
+	public BufferSimple(int id, int size) {
 		this.id = id;
 		this.size = size;
 		this.b = new byte[size];
@@ -59,7 +59,7 @@ public class BufferSp {
 		return "id:" + id + ", pos:" + pos + " " ;
 	}
 
-	BufferSp() {
+	BufferSimple() {
 	}
 
 	public static void main(String[] args) {
