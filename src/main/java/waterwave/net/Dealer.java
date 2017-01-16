@@ -1,15 +1,17 @@
 package waterwave.net;
 
+import shuisea.common.buffer.CommonBuffer;
+
 public interface Dealer {
-	void onConnect(ChannelNIO channel);
+	void onConnect(Channel channel);
 
-	void beforeRead(ChannelNIO channel);
+	void beforeRead(Channel channel);
 
-	void onData(ChannelNIO channel, int bytes);
+	void onData(Channel channel, CommonBuffer b, int bytes);
 
-	void afterWrite(ChannelNIO channel, int bytes);
+	void afterWrite(Channel channel, CommonBuffer b, int bytes);
 
-	void onError(ChannelNIO channel, Throwable exc);
+	void onError(Channel channel, CommonBuffer b, Throwable exc);
 
-	void onClose(ChannelNIO channel);
+	void onClose(Channel channel);
 }
