@@ -18,6 +18,11 @@ package waterwave.proxy;
 
 public class ProxyRouterService {
 
+	/**
+	 * single single1 is same and single1 using improved invoking
+	 * @author vv
+	 *
+	 */
 	enum type {
 		aio, nio, single, single1, bio
 	}
