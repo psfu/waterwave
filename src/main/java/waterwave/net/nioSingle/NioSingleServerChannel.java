@@ -26,7 +26,7 @@ public class NioSingleServerChannel extends ThreadSharedService {
 	}
 
 	public int read() {
-		ByteBuffer b = bp.getBuffer();
+		ByteBuffer b = bp.getBufferNio();
 		int r = read(b);
 		dealer.serverOnData(this, b, r);
 		return r;

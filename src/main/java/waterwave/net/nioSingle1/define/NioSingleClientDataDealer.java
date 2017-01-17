@@ -14,12 +14,15 @@
  * limitations under the License.
  * 
  */
-package waterwave.proxy;
 
-public class ProxyRouterService {
+package waterwave.net.nioSingle1.define;
 
-	enum type {
-		aio, nio, single, single1, bio
-	}
+import waterwave.net.DealerClient;
 
+
+public interface NioSingleClientDataDealer extends DealerClient{
+
+    
+	
+	
 }

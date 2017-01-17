@@ -68,8 +68,20 @@ public final class BufferPoolSingleNIO {
 
 		}
 	}
+	
+	
+	public CommonBuffer getBuffer() {
+		ByteBuffer b = bq.getFirst();
+		
+		CommonBuffer cb = new CommonBuffer(b);
+		//b.stat = 1;
+		//c.getAndIncrement();
+		++c;
 
-	public ByteBuffer getBuffer() {
+		return cb;
+	}
+
+	public ByteBuffer getBufferNio() {
 		ByteBuffer b;
 
 		b = bq.getFirst();

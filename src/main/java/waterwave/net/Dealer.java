@@ -14,4 +14,6 @@ public interface Dealer {
 	void onError(Channel channel, CommonBuffer b, Throwable exc);
 
 	void onClose(Channel channel);
+	
+	boolean acceptsMessages();
 }

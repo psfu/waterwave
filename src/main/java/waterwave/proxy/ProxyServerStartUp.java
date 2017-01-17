@@ -70,6 +70,10 @@ public class ProxyServerStartUp {
 			ProxyNioSingleServerService ss = new ProxyNioSingleServerService();
 			ss.init(pp);
 			break;
+		case single1:
+			waterwave.proxy.nioSingle1.ProxyNioSingleServerService ss1 = new waterwave.proxy.nioSingle1.ProxyNioSingleServerService();
+			ss1.init(pp);
+			break;
 		case bio:
 			ProxyBioServerService bs = new ProxyBioServerService();
 			bs.init(pp);
