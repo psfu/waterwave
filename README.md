@@ -56,8 +56,8 @@ CPU
 
 
 
- ![image](https://github.com/psfu/waterwave/re/report/WW-QPS-201701.png)
- ![image](https://github.com/psfu/waterwave/re/report/WW-CPU-201701.png)
+ ![image](https://github.com/psfu/waterwave/report/WW-QPS-201701.png)
+ ![image](https://github.com/psfu/waterwave/report/WW-CPU-201701.png)
 
 
  
