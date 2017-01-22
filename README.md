@@ -3,17 +3,17 @@
 ## first test:
 
 #### ENV
->VM: Xeon E312xx 2.4Ghz X 8 16GB RAM
->MYSQL 5.7.17
->JAVA 1.8.74
->NET VM NETWORK, SAME SEGMENT
+* VM: Xeon E312xx 2.4Ghz X 8 16GB RAM
+* MYSQL 5.7.17
+* JAVA 1.8.74
+* NET VM NETWORK, SAME SEGMENT
 
 #### DESC
->AIO: 2 thread for server R/W handler, 2 thread for client R/W handler 
->NIO: 1 thread for server R/W handler, 1 thread for client R/W handler, nT hread for work handler
->BIO: n thread for server R/W client R/W and work handler
->NIO(1t): 1 thread for server R/W client R/W and work handler
->NETTY(1t): 1 thread for server R/W client R/W and work handler
+* AIO: 2 thread for server R/W handler, 2 thread for client R/W handler 
+* NIO: 1 thread for server R/W handler, 1 thread for client R/W handler, nT hread for work handler
+* BIO: n thread for server R/W client R/W and work handler
+* NIO(1t): 1 thread for server R/W client R/W and work handler
+* NETTY(1t): 1 thread for server R/W client R/W and work handler
 
 
 
