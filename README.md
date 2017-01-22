@@ -1,6 +1,24 @@
 # waterwave
 
-## first test:
+## About
+
+* a network framework，implements modes of AIO BIO NIO 
+* an implementation of proxy based this network framework
+* may no additional lib is in dependency
+*
+* 一个网络框架，实现主流的模型，AIO NIO BIO等
+* 实现了一版基于框架的 PROXY 代理功能
+* 框架计划一直不依赖JDK外任何外部LIB
+
+## TODO
+* protocols interface  
+* HTTP protocols, MYSQL protocols analysis implements of protocols interface
+*
+* 下一步增加协议接口
+* 基于定义的接口实现HTTP,MYSQL协议解析
+
+
+## First test:
 
 #### ENV
 * VM: Xeon E312xx 2.4Ghz X 8 16GB RAM
