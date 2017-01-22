@@ -2,11 +2,11 @@
 
 ## About
 
-* a network framework，implements modes of AIO BIO NIO 
+* a network framework，implements modes of AIO BIO NIO and buffer optimization
 * an implementation of proxy based this network framework
 * may no additional lib is in dependency
 * -
-* 一个网络框架，实现主流的模型AIO NIO BIO等
+* 一个网络框架，实现主流的模型AIO NIO BIO等，以及相应的缓存优化
 * 实现了一版基于框架的 PROXY 代理功能
 * 框架计划一直不依赖JDK外任何外部LIB
 
@@ -20,7 +20,7 @@
 * 代理的数据日志接口，以及实现
 
 
-## First test:
+## First test （proxy）:
 
 #### ENV
 * VM: Xeon E312xx 2.4Ghz X 8 16GB RAM
@@ -34,7 +34,6 @@
 * BIO: n thread for server R/W client R/W and work handler
 * NIO(1t): 1 thread for server R/W client R/W and work handler
 * NETTY(1t): 1 thread for server R/W client R/W and work handler
-
 
 
 
