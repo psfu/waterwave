@@ -35,9 +35,13 @@
 * NIO(1t): 1 thread for server R/W client R/W and work handler
 * NETTY(1t): 1 thread for server R/W client R/W and work handler
 
+#### RESULT
+* just Mysql can be 100K QPS 
+* the best is the single thread Proxy, and may reach 75K QPS with low CPU using
+* with the handler it may reach 70K QPS with some CPU using
+* due to the implementation with synchronization in the writer, the NIO with 1T + 1T + nT implementation has low QPS, this may improve by the changes of the strategy    
 
-
-#### THREADS QPS					
+#### THREADS QPS (KQPS)					
 
 | T   	| DB QPS（NOPROXY）	| AIO(2T+2T) 	| NIO(1T+1T+nT) 	| BIO(nT) 	| NIO(1T) 	| NETTY(1T) 	|
 |-----	|---------			|------------	|---------------	|---------	|---------	|-----------	|
@@ -47,7 +51,7 @@
 | 80  	| 105     			| 62         	| 19            	| 68      	| 72      	| 67        	|
 | 100 	| 105     			| 68         	| 19            	| 72      	| 74      	| 74        	|					
 						
-#### THREADS CPU USING						
+#### THREADS CPU USING (%)						
 
 | T   	| DB CPU（NOPROXY）	| AIO(2T+2T) 	| NIO(1T+1T+nT) 	| BIO(nT) 	| NIO(1T) 	| NETTY(1T) 	|
 |-----	|---------			|------------	|---------------	|---------	|---------	|-----------	|

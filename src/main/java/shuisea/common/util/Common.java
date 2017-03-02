@@ -17,7 +17,8 @@
 
 package shuisea.common.util;
 
-
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -30,13 +31,23 @@ import shuisea.common.log.SimpleLogger;
 
 public class Common {
 
-	//static final String initPpFile = "log-client.properties";
+	// static final String initPpFile = "log-client.properties";
 	static Logger log = new SimpleLogger();
 
 	public static Properties loadPropertiesfile(String filePath) {
 		Properties properties = new Properties();
 		try {
-			properties.load(Thread.currentThread().getContextClassLoader().getResourceAsStream(filePath));
+			//file system
+			if(filePath.startsWith("/") || filePath.indexOf(":") == 1) {
+				File f = new File(filePath);
+				FileReader r = new FileReader(f);
+				properties.load(r);
+			//resources
+			}else {
+				properties.load(Thread.currentThread().getContextClassLoader().getResourceAsStream(filePath));
+			}
+			
+			
 		} catch (IOException e) {
 			log.log(9, "The properties file is not loaded.", e);
 			throw new IllegalArgumentException("The properties file is not loaded.", e);
@@ -57,10 +68,10 @@ public class Common {
 		return null;
 
 	}
-	
+
 	public static String setPp(String[] args, String ppfile) {
 		if (args != null && args.length > 0) {
-			if(!"null".equals(args[0])){
+			if (!"null".equals(args[0])) {
 				return args[0];
 			}
 		}
@@ -83,22 +94,23 @@ public class Common {
 			System.exit(0);
 		}
 	}
-	
-	
-	public final static String getStringFromException (Throwable e) {
-		
+
+	public final static String getStringFromException(Throwable e) {
+
 		StringWriter sw = new StringWriter();
 		PrintWriter ps = new PrintWriter(sw);
-		
+
 		e.printStackTrace(ps);
-		
+
 		return sw.toString();
 	}
-	
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		Properties pp = new Properties();
 
+		setArgs(new String[] { "1", "abc=123,efg=123,dd=235" }, pp);
+		System.out.println(pp);
 	}
 
 }

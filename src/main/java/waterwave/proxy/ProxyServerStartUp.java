@@ -86,6 +86,7 @@ public class ProxyServerStartUp {
 
 	public static void main(String[] args) {
 		Logger.log("init...");
+		System.out.println("using: java -jar this.jar ppFilePath params");
 		startUp(args);
 
 	}
