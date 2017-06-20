@@ -17,7 +17,7 @@
 
 package waterwave.net.bio.define;
 
-import shuisea.common.buffer.BufferSimple;
+import shui.common.buffer.BufferSimple;
 import waterwave.net.bio.BioServerChannel;
 
 public interface BioServerHandler extends Runnable{

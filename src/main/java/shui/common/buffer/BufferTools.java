@@ -15,53 +15,39 @@
  * 
  */
 
-package shuisea.common.log;
+package shui.common.buffer;
 
-import java.io.PrintWriter;
+import java.nio.ByteBuffer;
 
+public class BufferTools {
 
-public abstract class Logger {
-
-	public String threadInfo = null;
-	public int level;
-
-	protected boolean printTime = true;
-	protected boolean printThreadInfo = true;
-
-	public Logger() {
-	}
-
-	public Logger(boolean printTime) {
-		this();
-		this.printTime = printTime;
-	}
-
+	private final static BufferPoolNIO bp = new BufferPoolNIO(2 * 1024, 32 * 1024);
 	
-	public abstract void log(int level, Object o) ;
-	public abstract void log(int level, Object... os) ;
-	public abstract PrintWriter getErrorWriter();
+	public final static ByteBuffer getBuffer() {
+		//ByteBuffer input = ByteBuffer.allocate(16 * 1024);
+		ByteBuffer input = bp.allocate();
+		return input;
+	}
 
-
-	public final static void log(byte[] bs) {
-		for (byte b : bs) {
-			log1(b);
-			log1("\t");
+	public final static void returnBuffer(ByteBuffer buffer) {
+		bp.recycle(buffer);
+		
+	}
+	public final static byte[] getBuffer2Byte(ByteBuffer b) {
+		int p = b.position();
+		byte[] r = new byte[p];
+		if (b.position() != 0) {
+			b.flip();
 		}
-		log("\t");
-	}
-	
-	
-	public final static void log1(Object o) {
-		System.out.print(o);
-	}
-	
-	public final static void log(Object o) {
-		System.out.println(o);
+		b.get(r, 0, p);
+
+		return r;
 	}
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
 	}
+
 
 }

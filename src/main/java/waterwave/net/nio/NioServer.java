@@ -38,7 +38,7 @@ import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 
-import shuisea.common.buffer.BufferPoolNIO;
+import shui.common.buffer.BufferPoolNIO;
 import waterwave.net.nio.define.NioDataDealerFactory;
 import waterwave.net.nio.define.NioServerDataDealer;
 

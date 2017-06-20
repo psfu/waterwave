@@ -1,4 +1,4 @@
-package shuisea.common.util;
+package shui.common.util;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;

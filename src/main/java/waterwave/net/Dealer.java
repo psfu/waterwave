@@ -1,6 +1,6 @@
 package waterwave.net;
 
-import shuisea.common.buffer.CommonBuffer;
+import shui.common.buffer.CommonBuffer;
 
 public interface Dealer {
 	void onConnect(Channel channel);

@@ -15,39 +15,56 @@
  * 
  */
 
-package shuisea.common.buffer;
+package shui.common.buffer;
 
-import java.nio.ByteBuffer;
+public class BufferSimple {
 
-public class BufferTools {
+	public int size;
+	public int pos = 0;
+	public int id = 0;
+	public int stat = 0;
 
-	private final static BufferPoolNIO bp = new BufferPoolNIO(2 * 1024, 32 * 1024);
-	
-	public final static ByteBuffer getBuffer() {
-		//ByteBuffer input = ByteBuffer.allocate(16 * 1024);
-		ByteBuffer input = bp.allocate();
-		return input;
+	public byte[] b;
+
+	public long originDataPosEnd = 0;
+	public long originDataPosStart = 0;
+	public String originDataDesc;
+
+	public BufferSimple(int size) {
+		this.size = size;
+		this.b = new byte[size];
 	}
 
-	public final static void returnBuffer(ByteBuffer buffer) {
-		bp.recycle(buffer);
-		
+	public BufferSimple(int id, int size) {
+		this.id = id;
+		this.size = size;
+		this.b = new byte[size];
 	}
-	public final static byte[] getBuffer2Byte(ByteBuffer b) {
-		int p = b.position();
-		byte[] r = new byte[p];
-		if (b.position() != 0) {
-			b.flip();
-		}
-		b.get(r, 0, p);
 
-		return r;
+	public byte[] getBytes() {
+		return b;
+	}
+
+	public int getPos() {
+		return pos;
+	}
+
+	public void setPos(int pos) {
+		this.pos = pos;
+	}
+
+	@Override
+	public String toString() {
+		//
+		return "id:" + id + ", pos:" + pos + " " ;
+	}
+
+	BufferSimple() {
 	}
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
 	}
-
 
 }

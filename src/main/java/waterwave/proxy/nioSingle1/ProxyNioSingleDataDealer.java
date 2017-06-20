@@ -21,11 +21,11 @@ import java.net.InetAddress;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 
-import shuisea.common.buffer.BufferTools;
-import shuisea.common.buffer.CommonBuffer;
-import shuisea.common.log.Logger;
-import shuisea.common.service.ThreadSharedService;
-import shuisea.common.util.Common;
+import shui.common.buffer.BufferTools;
+import shui.common.buffer.CommonBuffer;
+import shui.common.log.Logger;
+import shui.common.service.ThreadSharedService;
+import shui.common.util.Common;
 import waterwave.net.Channel;
 import waterwave.net.nioSingle1.NioSingleClient;
 import waterwave.net.nioSingle1.NioSingleClientChannel;

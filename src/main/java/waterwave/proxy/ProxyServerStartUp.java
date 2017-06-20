@@ -18,9 +18,9 @@ package waterwave.proxy;
 
 import java.util.Properties;
 
-import shuisea.common.log.Logger;
-import shuisea.common.util.Common;
-import shuisea.common.util.PropertiesUtil;
+import shui.common.log.Logger;
+import shui.common.util.Common;
+import shui.common.util.PropertiesUtil;
 import waterwave.proxy.ProxyRouterService.type;
 import waterwave.proxy.aio.ProxyAioServerService;
 import waterwave.proxy.bio.ProxyBioServerService;

@@ -8,7 +8,7 @@ import java.net.SocketException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 
-import shuisea.common.buffer.BufferPoolSingleNIO;
+import shui.common.buffer.BufferPoolSingleNIO;
 import waterwave.net.nioSingle1.define.Handler;
 import waterwave.net.nioSingle1.define.NioSingleClientDataDealer;
 import waterwave.net.nioSingle1.define.NioSingleDataDealerFactory;

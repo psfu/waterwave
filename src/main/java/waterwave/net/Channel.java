@@ -2,7 +2,7 @@ package waterwave.net;
 
 import java.io.IOException;
 
-import shuisea.common.buffer.CommonBuffer;
+import shui.common.buffer.CommonBuffer;
 
 public interface Channel {
 	public boolean close();

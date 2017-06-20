@@ -15,7 +15,7 @@
  * 
  */
 
-package shuisea.common.util;
+package shui.common.util;
 
 import java.io.File;
 import java.io.FileReader;
@@ -26,8 +26,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Properties;
 
-import shuisea.common.log.Logger;
-import shuisea.common.log.SimpleLogger;
+import shui.common.log.Logger;
+import shui.common.log.SimpleLogger;
 
 public class Common {
 

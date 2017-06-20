@@ -11,7 +11,7 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 
-import shuisea.common.buffer.BufferPoolSingleNIO;
+import shui.common.buffer.BufferPoolSingleNIO;
 import waterwave.net.nioSingle.define.Handler;
 import waterwave.net.nioSingle.define.NioSingleDataDealerFactory;
 import waterwave.net.nioSingle.define.NioSingleServerDataDealer;

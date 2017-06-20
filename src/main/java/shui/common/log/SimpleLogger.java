@@ -15,7 +15,7 @@
  * 
  */
 
-package shuisea.common.log;
+package shui.common.log;
 
 import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;

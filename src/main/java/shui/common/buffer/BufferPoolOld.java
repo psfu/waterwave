@@ -18,7 +18,7 @@
 
 //from cobar
 
-package shuisea.common.buffer;
+package shui.common.buffer;
 
 import java.nio.ByteBuffer;
 import java.util.concurrent.locks.ReentrantLock;

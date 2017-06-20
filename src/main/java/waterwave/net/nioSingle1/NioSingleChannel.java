@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 
-import shuisea.common.buffer.BufferPoolSingleNIO;
-import shuisea.common.buffer.CommonBuffer;
-import shuisea.common.service.ThreadSharedService;
+import shui.common.buffer.BufferPoolSingleNIO;
+import shui.common.buffer.CommonBuffer;
+import shui.common.service.ThreadSharedService;
 import waterwave.net.Channel;
 
 public abstract class NioSingleChannel extends ThreadSharedService implements Channel {

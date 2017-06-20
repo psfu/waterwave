@@ -3,8 +3,8 @@ package waterwave.net.nioSingle1;
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
 
-import shuisea.common.buffer.BufferPoolSingleNIO;
-import shuisea.common.buffer.CommonBuffer;
+import shui.common.buffer.BufferPoolSingleNIO;
+import shui.common.buffer.CommonBuffer;
 import waterwave.net.nioSingle1.define.NioSingleClientDataDealer;
 
 public class NioSingleClientChannel extends NioSingleChannel {

@@ -15,12 +15,12 @@
  * 
  */
 
-package shuisea.common.service;
+package shui.common.service;
 
 import java.util.Properties;
 
-import shuisea.common.log.Logger;
-import shuisea.common.log.SimpleLogger;
+import shui.common.log.Logger;
+import shui.common.log.SimpleLogger;
 
 
 

@@ -16,7 +16,7 @@
  */
 
 
-package shuisea.common.util;
+package shui.common.util;
 
 import java.util.Properties;
 

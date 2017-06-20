@@ -15,18 +15,19 @@
  * 
  */
 
-package shuisea.common.buffer;
+package shui.common.buffer;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-import shuisea.common.log.Logger;
-import shuisea.common.log.SimpleLogger;
+import shui.common.log.Logger;
+import shui.common.log.SimpleLogger;
 
-public final class BufferPoolSingle {
+public final class BufferPoolSingleNIO {
 
-	LinkedList<BufferSimple> bq = new LinkedList<BufferSimple>();
-	ArrayList<BufferSimple> bs = null;
+	LinkedList<ByteBuffer> bq = new LinkedList<ByteBuffer>();
+	ArrayList<ByteBuffer> bs = null;
 
 	public Logger log = new SimpleLogger();
 
@@ -43,15 +44,19 @@ public final class BufferPoolSingle {
 	 * @param size
 	 * @param bsize
 	 */
-	public BufferPoolSingle(int size, int bsize) {
+	public BufferPoolSingleNIO(int size, int bsize) {
 		this.size = size;
-		bs = new ArrayList<BufferSimple>(size);
+		bs = new ArrayList<ByteBuffer>(size);
 		for (; i < size; i++) {
-			BufferSimple b = new BufferSimple(i, bsize);
+			ByteBuffer b =  create(bsize);
 			bs.add(b);
 			bq.add(b);
 		}
 	}
+	
+	private ByteBuffer create(int size) {
+        return ByteBuffer.allocate(size);
+    }
 
 	public void checkBuffer() {
 		int size = bq.size();
@@ -63,35 +68,49 @@ public final class BufferPoolSingle {
 
 		}
 	}
+	
+	
+	public CommonBuffer getBuffer() {
+		ByteBuffer b = bq.getFirst();
+		
+		CommonBuffer cb = new CommonBuffer(b);
+		//b.stat = 1;
+		//c.getAndIncrement();
+		++c;
 
-	public BufferSimple getBuffer() {
-		BufferSimple b;
+		return cb;
+	}
+
+	public ByteBuffer getBufferNio() {
+		ByteBuffer b;
 
 		b = bq.getFirst();
-		b.stat = 1;
+		//b.stat = 1;
 		//c.getAndIncrement();
 		++c;
 
 		return b;
 	}
 
-	public void finishBuffer(BufferSimple b) {
-		if (b.stat == 0) {
-			return;
-		}
-		b.stat = 0;
-		b.pos = 0;
+	public void finishBuffer(ByteBuffer b) {
+//		if (b.stat == 0) {
+//			return;
+//		}
+//		b.stat = 0;
+//		b.pos = 0;
+		
+		b.clear();
 		boolean offer = bq.offer(b);
 
 		if (!offer) {
-			log.log(10, "offer bqw fail");
+			log.log(10, "offer bqw fail!!");
 			return;
 		}
 		//c.decrementAndGet();
 		--c;
 	}
 
-	public void giveupBuffer(BufferSimple b) {
+	public void giveupBuffer(ByteBuffer b) {
 		finishBuffer(b);
 	}
 

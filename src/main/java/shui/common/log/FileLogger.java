@@ -14,16 +14,33 @@
  * limitations under the License.
  * 
  */
-package shuisea.common.service;
 
-import shuisea.common.log.Logger;
-import shuisea.common.log.SimpleLogger;
+package shui.common.log;
 
-public class ThreadSharedService {
-	protected final Logger log = new SimpleLogger(true);
+import java.io.PrintWriter;
+
+public class FileLogger extends Logger {
+
+	@Override
+	public PrintWriter getErrorWriter() {
+		return null;
+	}
+	
+	@Override
+	public void log(int level, Object o) {
+		
+	}
+	
+	@Override
+	public void log(int level, Object... os) {
+		
+	}
 	
 	public static void main(String[] args) {
+		// TODO Auto-generated method stub
 
 	}
+
+	
 
 }

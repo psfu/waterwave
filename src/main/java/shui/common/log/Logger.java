@@ -15,32 +15,53 @@
  * 
  */
 
-package shuisea.common.log;
+package shui.common.log;
 
 import java.io.PrintWriter;
 
-public class FileLogger extends Logger {
 
-	@Override
-	public PrintWriter getErrorWriter() {
-		return null;
+public abstract class Logger {
+
+	public String threadInfo = null;
+	public int level;
+
+	protected boolean printTime = true;
+	protected boolean printThreadInfo = true;
+
+	public Logger() {
+	}
+
+	public Logger(boolean printTime) {
+		this();
+		this.printTime = printTime;
+	}
+
+	
+	public abstract void log(int level, Object o) ;
+	public abstract void log(int level, Object... os) ;
+	public abstract PrintWriter getErrorWriter();
+
+
+	public final static void log(byte[] bs) {
+		for (byte b : bs) {
+			log1(b);
+			log1("\t");
+		}
+		log("\t");
 	}
 	
-	@Override
-	public void log(int level, Object o) {
-		
+	
+	public final static void log1(Object o) {
+		System.out.print(o);
 	}
 	
-	@Override
-	public void log(int level, Object... os) {
-		
+	public final static void log(Object o) {
+		System.out.println(o);
 	}
-	
+
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
 	}
-
-	
 
 }

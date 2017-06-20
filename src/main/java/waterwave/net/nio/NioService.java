@@ -20,8 +20,8 @@ import java.nio.channels.SelectionKey;
 import java.util.Properties;
 import java.util.Set;
 
-import shuisea.common.service.Service;
-import shuisea.common.service.SingleThreadService;
+import shui.common.service.Service;
+import shui.common.service.SingleThreadService;
 
 public abstract class NioService extends SingleThreadService {
 	

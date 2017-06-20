@@ -1,4 +1,4 @@
-package shuisea.common.buffer;
+package shui.common.buffer;
 
 import java.nio.ByteBuffer;
 

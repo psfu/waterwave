@@ -15,14 +15,14 @@
  * 
  */
 
-package shuisea.common.buffer;
+package shui.common.buffer;
 
 import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import shuisea.common.log.Logger;
-import shuisea.common.log.SimpleLogger;
+import shui.common.log.Logger;
+import shui.common.log.SimpleLogger;
 
 
 

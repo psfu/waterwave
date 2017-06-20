@@ -14,10 +14,16 @@
  * limitations under the License.
  * 
  */
-package waterwave.net.bio;
+package shui.common.service;
 
-import shui.common.service.ThreadSharedService;
+import shui.common.log.Logger;
+import shui.common.log.SimpleLogger;
 
-public abstract class BioChannel  extends ThreadSharedService {
+public class ThreadSharedService {
+	protected final Logger log = new SimpleLogger(true);
+	
+	public static void main(String[] args) {
+
+	}
 
 }

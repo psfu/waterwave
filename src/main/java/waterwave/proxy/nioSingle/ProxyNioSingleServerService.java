@@ -23,10 +23,10 @@ import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.Properties;
 
-import shuisea.common.buffer.BufferPoolSingleNIO;
-import shuisea.common.service.ShutdownService;
-import shuisea.common.service.SingleThreadService;
-import shuisea.common.util.PropertiesUtil;
+import shui.common.buffer.BufferPoolSingleNIO;
+import shui.common.service.ShutdownService;
+import shui.common.service.SingleThreadService;
+import shui.common.util.PropertiesUtil;
 import waterwave.net.nio.NioClient;
 import waterwave.net.nioSingle.NioSingleClient;
 import waterwave.net.nioSingle.NioSingleServer;

@@ -2,7 +2,7 @@ package waterwave.net.nioSingle;
 
 import java.util.Properties;
 
-import shuisea.common.service.SingleThreadService;
+import shui.common.service.SingleThreadService;
 
 public class NioSingleService  extends SingleThreadService {
 

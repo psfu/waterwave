@@ -21,8 +21,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
-import shuisea.common.buffer.BufferPool;
-import shuisea.common.buffer.BufferSimple;
+import shui.common.buffer.BufferPool;
+import shui.common.buffer.BufferSimple;
 import waterwave.net.bio.define.BioServerHandler;
 
 public class BioServerChannel extends BioChannel{

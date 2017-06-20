@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 
-import shuisea.common.buffer.BufferPoolSingleNIO;
-import shuisea.common.service.ThreadSharedService;
+import shui.common.buffer.BufferPoolSingleNIO;
+import shui.common.service.ThreadSharedService;
 import waterwave.net.nioSingle.define.NioSingleClientDataDealer;
 import waterwave.net.nioSingle.define.NioSingleServerDataDealer;
 

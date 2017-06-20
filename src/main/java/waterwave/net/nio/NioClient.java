@@ -32,7 +32,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
-import shuisea.common.buffer.BufferPoolNIO;
+import shui.common.buffer.BufferPoolNIO;
 import waterwave.net.nio.define.NioClientDataDealer;
 import waterwave.net.nio.define.NioDataDealerFactory;
 
