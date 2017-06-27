@@ -30,18 +30,18 @@
 
 #### DESC
 * AIO:     
-  > 2 thread for R/W handler of server and also for handler of working,
-  > 2 thread for R/W handler of client and also for handler of working 
+* * 2 thread for R/W handler of server and also for handler of working,
+* * 2 thread for R/W handler of client and also for handler of working 
 * NIO: 
-  > 1 thread for R/W handler of server, 
-  > 1 thread for R/W handler of client, 
-  > n hread for handler of working
+* * 1 thread for R/W handler of server, 
+* * 1 thread for R/W handler of client, 
+* * n hread for handler of working
 * BIO: 
-  > n thread for R/W handler of server and R/W handler of client and also for handler of working
+* * n thread for R/W handler of server and R/W handler of client and also for handler of working
 * NIO(1t): 
-  > 1 thread for R/W handler of server and R/W handler of client and also for handler of working
+* * 1 thread for R/W handler of server and R/W handler of client and also for handler of working
 * NETTY(1t): 
-  > 1 thread for R/W handler of server and R/W handler of client and also for handler of working
+* * 1 thread for R/W handler of server and R/W handler of client and also for handler of working
   
 #### RESULT
 * just directly connecting to Mysql can upto 100K QPS 
