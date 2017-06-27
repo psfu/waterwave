@@ -1,6 +1,6 @@
 # waterwave
 
-## About
+### About
 
 * a framework，which implements of the modle of AIO BIO NIO and which with optimization of it's buffer.
 * an implementation of proxy which is using this framework.
@@ -10,17 +10,17 @@
 * 实现了一版基于框架的 PROXY 代理功能
 * 框架不依赖JDK外的任何外部LIB
 
-## TODO
+### TODO
 * protocols interface  
 * implementations of parser for HTTP protocols and MYSQL protocols
 * implementations of recording for the Proxy's logging
-* -
+
 * 下一步增加协议接口
 * 实现HTTP,MYSQL协议解析
 * 代理的日志接口，和实现
 
 
-## First test （proxy）:
+### First test （proxy）:
 
 #### ENV
 * VM: Xeon E312xx 2.4Ghz X 8 16GB RAM
@@ -29,8 +29,8 @@
 * NET VM NETWORK, SAME SEGMENT
 
 #### DESC
-* AIO: 
-  > 2 thread for R/W handler of server and also for handler of working,
+* AIO:     
+  > 2 thread for R/W handler of server and also for handler of working,
   > 2 thread for R/W handler of client and also for handler of working 
 * NIO: 
   > 1 thread for R/W handler of server, 
