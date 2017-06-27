@@ -2,22 +2,22 @@
 
 ## About
 
-* a network framework，implements modes of AIO BIO NIO and buffer optimization
-* an implementation of proxy based this network framework
-* may no additional lib is in dependency
+* a framework，which implements the modle of AIO BIO NIO and with optimization of it's buffer.
+* an implementation of proxy based on this framework
+* it is just depend on the JDK lib with out other libs
 * -
-* 一个网络框架，实现主流的模型AIO NIO BIO等，以及相应的缓存优化
+* 一个网络框架，实现主流的AIO NIO BIO等模型，以及相应的缓存优化
 * 实现了一版基于框架的 PROXY 代理功能
-* 框架计划一直不依赖JDK外任何外部LIB
+* 框架不依赖JDK外的任何外部LIB
 
 ## TODO
 * protocols interface  
-* HTTP protocols, MYSQL protocols analysis implements of protocols interface
-* proxy data log interface and implementations
+* parser implements of HTTP protocols and MYSQL protocols
+* interface and implementations of recording the Proxy's log
 * -
 * 下一步增加协议接口
-* 基于定义的接口实现HTTP,MYSQL协议解析
-* 代理的数据日志接口，以及实现
+* 实现HTTP,MYSQL协议解析
+* 代理的日志接口，和实现
 
 
 ## First test （proxy）:
@@ -29,17 +29,26 @@
 * NET VM NETWORK, SAME SEGMENT
 
 #### DESC
-* AIO: 2 thread for server R/W handler, 2 thread for client R/W handler 
-* NIO: 1 thread for server R/W handler, 1 thread for client R/W handler, nT hread for work handler
-* BIO: n thread for server R/W client R/W and work handler
-* NIO(1t): 1 thread for server R/W client R/W and work handler
-* NETTY(1t): 1 thread for server R/W client R/W and work handler
-
+* AIO: 
+  > 2 thread for R/W handler of server,
+  > 2 thread for R/W handler of client 
+* NIO: 
+  > 1 thread for R/W handler of server, 
+  > 1 thread for R/W handler of client, 
+  > nT hread for handler of working
+* BIO: 
+  > n thread for R/W handler of server and R/W handler of client and also for handler of working
+* NIO(1t): 
+  > 1 thread for R/W handler of server and R/W handler of client and also for handler of working
+* NETTY(1t): 
+  > 1 thread for R/W handler of server and R/W handler of client and also for handler of working
+  
 #### RESULT
-* just Mysql can be 100K QPS 
-* the best is the single thread Proxy, and may reach 75K QPS with low CPU using
-* with the handler it may reach 70K QPS with some CPU using
-* due to the implementation with synchronization in the writer, the NIO with 1T + 1T + nT implementation has low QPS, this may improve by the changes of the strategy    
+* just Mysql can upto 100K QPS 
+* the best result is the single thread Proxy(NIO), and it may reach 75K QPS and with low CPU using.
+* proxy using BIO may reach 70K QPS and with some CPU using.
+* proxy using AIO may reach 70K QPS and with some higher CPU using.
+* due to the implementation using synchronization in the writer, the NIO with 1T + 1T + nT implementation has low QPS, this may improve by the changes of the strategy    
 
 #### THREADS QPS (KQPS)					
 
