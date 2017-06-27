@@ -3,12 +3,13 @@
 ### About
 
 * a framework，which implements of the modle of AIO BIO NIO and which with optimization of it's buffer.
-* an implementation of proxy which is using this framework.
 * it is just depends on the JDK lib, witch with out other libs.
+* have done an implementation of proxy which is using this framework.
+
 
 * 一个网络框架，实现主流的AIO NIO BIO等模型，以及相应的缓存优化
-* 实现了一版基于框架的 PROXY 代理功能
 * 框架不依赖JDK外的任何外部LIB
+* 在工程中实现了一版基于框架的代理功能
 
 ### TODO
 * protocols interface  
