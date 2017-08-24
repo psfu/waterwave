@@ -25,7 +25,7 @@ import shui.common.buffer.BufferTools;
 import shui.common.buffer.CommonBuffer;
 import shui.common.log.Logger;
 import shui.common.service.ThreadSharedService;
-import shui.common.util.Common;
+import shui.common.util.CommonUtil;
 import waterwave.net.Channel;
 import waterwave.net.nioSingle1.NioSingleClient;
 import waterwave.net.nioSingle1.NioSingleClientChannel;
@@ -149,7 +149,7 @@ public class ProxyNioSingleDataDealer extends ThreadSharedService implements Nio
 			//
 			writeToServer(b);
 		} else {
-			String err = Common.getStringFromException(e);
+			String err = CommonUtil.getStringFromException(e);
 			ByteBuffer b1 = ByteBuffer.wrap(err.getBytes());
 
 			b.b.clear();
@@ -226,7 +226,7 @@ public class ProxyNioSingleDataDealer extends ThreadSharedService implements Nio
 			writeToServer(b);
 		} else {
 			// b = BufferTools.getBuffer();
-			String err = Common.getStringFromException(e);
+			String err = CommonUtil.getStringFromException(e);
 			ByteBuffer b1 = ByteBuffer.wrap(err.getBytes());
 
 			b.b.clear();

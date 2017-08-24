@@ -19,7 +19,7 @@ package waterwave.proxy;
 import java.util.Properties;
 
 import shui.common.log.Logger;
-import shui.common.util.Common;
+import shui.common.util.ParamUtil;
 import shui.common.util.PropertiesUtil;
 import waterwave.proxy.ProxyRouterService.type;
 import waterwave.proxy.aio.ProxyAioServerService;
@@ -34,19 +34,19 @@ public class ProxyServerStartUp {
 	public static void startUp(String[] args) {
 		
 		//get env param
-		Properties initPp = Common.loadPropertiesfile(initPpFile);
+		Properties initPp = ParamUtil.loadPropertiesfile(initPpFile);
 		
 		String ppfile = initPp.getProperty("service.ppfile");
 
-		ppfile = Common.setPp(args, ppfile);
+		ppfile = ParamUtil.setPp(args, ppfile);
 
 		Logger.log(ppfile);
 
 		
 		//get param
-		Properties pp = Common.loadPropertiesfile(ppfile);
+		Properties pp = ParamUtil.loadPropertiesfile(ppfile);
 
-		Common.setArgs(args, pp);
+		ParamUtil.setArgs(args, pp);
 
 		Logger.log(pp);
 		

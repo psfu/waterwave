@@ -20,16 +20,12 @@ package shui.common.util;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Properties;
 
 import shui.common.log.Logger;
 import shui.common.log.SimpleLogger;
 
-public class Common {
+public class ParamUtil {
 
 	// static final String initPpFile = "log-client.properties";
 	static Logger log = new SimpleLogger();
@@ -37,36 +33,22 @@ public class Common {
 	public static Properties loadPropertiesfile(String filePath) {
 		Properties properties = new Properties();
 		try {
-			//file system
-			if(filePath.startsWith("/") || filePath.indexOf(":") == 1) {
+			// file system
+			if (filePath.startsWith("/") || filePath.indexOf(":") == 1) {
 				File f = new File(filePath);
 				FileReader r = new FileReader(f);
 				properties.load(r);
-			//resources
-			}else {
+				// resources
+			} else {
 				properties.load(Thread.currentThread().getContextClassLoader().getResourceAsStream(filePath));
 			}
-			
-			
+
 		} catch (IOException e) {
 			log.log(9, "The properties file is not loaded.", e);
 			throw new IllegalArgumentException("The properties file is not loaded.", e);
 		}
 
 		return properties;
-	}
-
-	public static String getLocalIp() {
-		InetAddress addr;
-		try {
-			addr = InetAddress.getLocalHost();
-			String ip = addr.getHostAddress().toString();
-			return ip;
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
-		return null;
-
 	}
 
 	public static String setPp(String[] args, String ppfile) {
@@ -93,16 +75,6 @@ public class Common {
 			System.out.println("wrong args!");
 			System.exit(0);
 		}
-	}
-
-	public final static String getStringFromException(Throwable e) {
-
-		StringWriter sw = new StringWriter();
-		PrintWriter ps = new PrintWriter(sw);
-
-		e.printStackTrace(ps);
-
-		return sw.toString();
 	}
 
 	public static void main(String[] args) {

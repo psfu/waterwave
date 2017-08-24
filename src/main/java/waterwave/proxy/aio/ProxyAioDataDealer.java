@@ -25,7 +25,8 @@ import java.util.LinkedList;
 import shui.common.buffer.BufferTools;
 import shui.common.log.Logger;
 import shui.common.service.ThreadSharedService;
-import shui.common.util.Common;
+import shui.common.util.CommonUtil;
+import shui.common.util.ParamUtil;
 import waterwave.net.aio.AioClient;
 import waterwave.net.aio.AioClientChannel;
 import waterwave.net.aio.AioServerChannel;
@@ -278,7 +279,7 @@ public class ProxyAioDataDealer extends ThreadSharedService implements AioServer
 			//
 			writeToServer(b);
 		} else {
-			String err = Common.getStringFromException(e);
+			String err = CommonUtil.getStringFromException(e);
 			b = ByteBuffer.wrap(err.getBytes());
 			writeToServer(b);
 		}
@@ -354,7 +355,7 @@ public class ProxyAioDataDealer extends ThreadSharedService implements AioServer
 			writeToServer(b);
 		} else {
 			//b = BufferTools.getBuffer();
-			String err = Common.getStringFromException(e);
+			String err = CommonUtil.getStringFromException(e);
 			b = ByteBuffer.wrap(err.getBytes());
 			writeToServer(b);
 		}

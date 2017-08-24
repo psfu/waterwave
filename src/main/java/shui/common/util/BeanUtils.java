@@ -43,10 +43,22 @@ public class BeanUtils {
 
 	}
 	
+	/**
+	 * get all object fields
+	 * 
+	 * @param in
+	 * @return
+	 */
 	public static <T> Map<String, Object> getAllFields(T in) {
 		return getAllFields(in.getClass(),in);
 	}
 
+	/**
+	 * get all object fields
+	 * @param c
+	 * @param in
+	 * @return
+	 */
 	public static <T> Map<String, Object> getAllFields(Class<? extends T> c, T in) {
 
 		Map<String, Object> r = new HashMap<>();
@@ -62,6 +74,12 @@ public class BeanUtils {
 
 	}
 
+	/**
+	 * get object field
+	 * @param c
+	 * @param in
+	 * @param r
+	 */
 	private static <T> void getFields(Class<? extends T> c, T in, Map<String, Object> r) {
 		Field[] fields = c.getDeclaredFields();
 		try {

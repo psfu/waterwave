@@ -10,7 +10,7 @@ import java.util.Set;
  *
  * @author shouyilin
  */
-public class StringUtil {
+public class StringUtilImp {
 
 	/**
 	 * 是否有空
@@ -55,7 +55,7 @@ public class StringUtil {
 	 * @return
 	 */
 	public static String empty(String input) {
-		if (StringUtil.isEmpty(input)) {
+		if (StringUtilImp.isEmpty(input)) {
 			return null;
 		}
 		return input;
@@ -85,13 +85,13 @@ public class StringUtil {
 	}
 
 	public static String[] split(String input, String regex) {
-		if (StringUtil.isEmpty(input) || regex == null) {
+		if (StringUtilImp.isEmpty(input) || regex == null) {
 			return null;
 		}
 		Set<String> set = new LinkedHashSet<String>();
 		String[] values = input.split(regex);
 		for (String value : values) {
-			if (StringUtil.isEmpty(value)) {
+			if (StringUtilImp.isEmpty(value)) {
 				continue;
 			}
 			if (set.contains(value)) {
@@ -114,8 +114,8 @@ public class StringUtil {
 		}
 		Set<String> set = new HashSet<String>();
 		for (String input : inputs) {
-			if (!StringUtil.isEmpty(input)) {
-				set.add(StringUtil.trim(input));
+			if (!StringUtilImp.isEmpty(input)) {
+				set.add(StringUtilImp.trim(input));
 			}
 		}
 		String[] array = new String[set.size()];
@@ -132,7 +132,7 @@ public class StringUtil {
 	 * @return
 	 */
 	public static String splitAndjoin(String input, String splitRegex, String joinSign, boolean isTrim) {
-		if (StringUtil.isEmpty(input)) {
+		if (StringUtilImp.isEmpty(input)) {
 			return null;
 		}
 		if (splitRegex == null || joinSign == null) {
@@ -165,11 +165,11 @@ public class StringUtil {
 		}
 		StringBuilder builder = null;
 		for (String input : inputs) {
-			if (StringUtil.isEmpty(input)) {
+			if (StringUtilImp.isEmpty(input)) {
 				continue;
 			}
 			if (isTrim) {
-				input = StringUtil.trim(input);
+				input = StringUtilImp.trim(input);
 			}
 			if (builder == null) {
 				builder = new StringBuilder();
