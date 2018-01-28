@@ -17,8 +17,9 @@
 package waterwave.net.aio;
 
 import shui.common.service.ThreadSharedService;
+import waterwave.net.aio.define.AioChannelI;
 
-public abstract class AioChannel extends ThreadSharedService {
+public abstract class AioChannel extends ThreadSharedService implements AioChannelI{
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub

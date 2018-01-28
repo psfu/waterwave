@@ -175,7 +175,7 @@ public final class AioServerChannel extends AioChannel{
      * Enqueue a read
      * @param completionHandler callback on completed read
      */
-    public final void write(ByteBuffer b ,CompletionHandler<Integer, ? super ByteBuffer> completionHandler) {
+    protected final void write(ByteBuffer b ,CompletionHandler<Integer, ? super ByteBuffer> completionHandler) {
     	//log.log(1, "start server write ");
     	
         if (!channel.isOpen()) {
